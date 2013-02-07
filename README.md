@@ -8,24 +8,34 @@ Features
 * Full FAQ with adding, editing and deleting
 * Question categories
 * BBCode supported answer fields
-* Custom BBCode for linking to specific FAQ entries: [faq=10]
-* [Option] Multiple sort options (alphabetical, submit date, view count)
-* [Option] Show answers on the same page (slide down), or a new page
-* [Option] Questions per page
-* [Block] Most popular questions
-* [Block] Recently added questions
+* Permissions for managing questions, and for managing categories
+* Custom BBCode for linking to specific FAQ entries: `[faq=10][/faq]`
+* (Option) Multiple sort options (alphabetical, submit date, view count)
+* (Option) Show answers on the same page (slide down), or a new page
+* (Option) Questions per page
+* (Option) Social media share buttons enabled per question
+* (Block) Most popular questions
+* (Block) Recently added questions
+* (Block) FAQ Statistics
 * RSS feed for most recently added questions
 * Uses XenForo phrases for easy language translations
 
 Installation
 ------------
-To install:
 
-1. Upload files/directories underneath `Upload` to your XenForo's root.
+1. Install using Chris Deeming's [Add-On Installer](http://xenforo.com/community/resources/add-on-installer.960/).
+
+Or:
+
+1. Upload files/directories underneath `upload` to your XenForo's root.
 2. Import the add-on XML using the add-on importer in your Admin CP.
-3. Set up the user group permissions.
-4. Start adding categories and questions to your FAQ!
-5. (Optional) Configure the add-on: `Home > Options > [Iversia] FAQ Manager`.
+
+Configuration
+------------
+
+1. Set up the FAQ user group permissions.
+2. Start adding categories and questions to your FAQ.
+3. (Optional) Configure the add-on: `Home > Options > [Iversia] FAQ Manager`.
 
 Requirements
 ------------
