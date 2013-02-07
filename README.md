@@ -23,12 +23,19 @@ Features
 Demo
 ------------
 
-[http://shadowlack.com/faq/](http://shadowlack.com/faq/)
+> [http://shadowlack.com/faq/](http://shadowlack.com/faq/)
+
+Download
+------------
+
+To get the latest stable version, please download it from the official [XenForo Resource Manager](http://xenforo.com/community/resources/iversia-faq-manager.1413/).
 
 Installation
 ------------
 
 1. Install using Chris Deeming's [Add-On Installer](http://xenforo.com/community/resources/add-on-installer.960/).
+
+> ![Chris Deeming's Add-On Installer](http://www.deemit.co.uk/autoinstall.png)
 
 Or:
 
@@ -51,7 +58,7 @@ Copyright / License
 
 This project is released underneath the [DBAD PUBLIC LICENSE](http://www.dbad-license.org) by Phil Sturgeon.
 
-Frequently Asked Questions
+Questions
 ------------
 **I have questions added, but the [faq] BB Code says question not found.**
 
