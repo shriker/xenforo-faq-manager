@@ -396,13 +396,19 @@ desc={xen:phrase descending_order}</edit_format_params>
 <xen:include template="iversia_faq_footer" />
 ]]></template>
     <template title="iversia_faq_footer" version_id="90" version_string="1.0.0"><![CDATA[<div id="iversiaFAQ" class="muted">FAQ Manager &copy; <a href="http://www.iversia.com" title="Iversia - Web Developer and Illustrator">Iversia</a> from <a href="http://shadowlack.com" title="Shadowlack, a Science Fantasy Play-by-Post RPG">Shadowlack</a></div>]]></template>
-    <template title="iversia_faq_index" version_id="90" version_string="1.0.0"><![CDATA[<xen:title>{xen:phrase iversia_faq_index_title}</xen:title>
+    <template title="iversia_faq_index" version_id="100" version_string="1.0.0"><![CDATA[<xen:title>{xen:phrase iversia_faq_index_title}</xen:title>
 
 <xen:include template="iversia_faq_sidebar" />
 
 <xen:require css="iversia_faq.css" />
 <xen:require css="help_wrapper.css" />
 <xen:require js="/js/iversia/faq/jquery.faq.js" />
+
+<xen:if is="{$canManageFAQ}">
+	<xen:topctrl>
+		<a href="{xen:link full:faq/create}" class="callToAction"><span>{xen:phrase iversia_faq_add_to}</span></a>
+	</xen:topctrl>
+</xen:if>
 
 <div class="container">
 	<div class="helpSideBar">
@@ -415,7 +421,6 @@ desc={xen:phrase descending_order}</edit_format_params>
 			<div class="faqContent">
 				
 				<div class="pageNavLinkGroup">
-					
 					<xen:if is="{$canManageFAQ} OR {$canManageCats}">
 						<div class="linkGroup SelectionCountContainer">
 							<div class="Popup">
@@ -423,7 +428,7 @@ desc={xen:phrase descending_order}</edit_format_params>
 								<div class="Menu">
 									<div class="primaryContent menuHeader"><h3>{xen:phrase iversia_faq_question_tools}</h3></div>
 									<ul class="secondaryContent blockLinksList">
-										<xen:if is="{$canManageFAQ}"><li><a href="{xen:link full:faq/create}" class="">{xen:phrase iversia_faq_add_to}</a></li></xen:if>
+										<xen:if is="{$canManageFAQ}"><li><a href="{xen:link full:faq/create}">{xen:phrase iversia_faq_add_to}</a></li></xen:if>
 										<xen:if is="{$canManageCats}"><li><a href="{xen:link full:faq-cat/create}">{xen:phrase iversia_faq_add_category}</a></li></xen:if>
 									</ul>
 								</div>
