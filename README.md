@@ -49,7 +49,7 @@ Requirements
 Copyright / License
 ------------
 
-This project is released underneath the [DBAD PUBLIC LICENSE](ttp://www.dbad-license.org) by Phil Sturgeon.
+This project is released underneath the [DBAD PUBLIC LICENSE](http://www.dbad-license.org) by Phil Sturgeon.
 
 Frequently Asked Questions
 ------------
