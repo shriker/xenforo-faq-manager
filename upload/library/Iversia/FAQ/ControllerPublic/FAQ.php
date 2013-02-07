@@ -75,12 +75,9 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 
 		$faq_id = $this->_input->filterSingle('faq_id', XenForo_Input::UINT);
 
-		$breadCrumbs['faq'] = array('value' => new XenForo_Phrase('iversia_faq'),'href' => XenForo_Link::buildPublicLink('full:faq'));
-
 		$viewParams = array(
 			'categories' 	=> $this->_getCategoryModel()->getAll(),
-			'question' 		=> $this->_getQuestionModel()->getById($faq_id),
-			'breadCrumbs'	=> $breadCrumbs,
+			'question' 		=> $this->_getQuestionModel()->getById($faq_id)
 		);
 
 		return $this->responseView('Iversia_FAQ_ViewPublic_Edit', 'iversia_faq_edit', $viewParams);

@@ -27,9 +27,11 @@ class Iversia_FAQ_Installer
 					`view_count` int(10) unsigned NOT NULL DEFAULT '0',
 					`likes` int(10) unsigned NOT NULL,
 					`like_users` blob NOT NULL,
+					FULLTEXT(answer),
 					PRIMARY KEY (`faq_id`),
 					KEY `user_id` (`user_id`),
-					KEY `category_id` (`category_id`)
+					KEY `category_id` (`category_id`),
+					KEY `view_count` (`view_count`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8
 			");
 
