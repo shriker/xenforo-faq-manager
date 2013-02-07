@@ -1,0 +1,41 @@
+<?php
+
+class Iversia_FAQ_CronEntry_FAQ
+{
+	public static function runQuestionCache()
+	{
+		$faqCache = XenForo_Model::create('XenForo_Model_DataRegistry');
+		$faqModel = XenForo_Model::create('Iversia_FAQ_Model_Question');
+
+		$questions = $faqModel->getAll();
+
+		if ( ! $questions)
+		{
+			return;
+		}
+
+		$faqEntry = array();
+
+		foreach ($questions AS $question)
+		{
+			$faqEntry[$question['faq_id']] = $question['question'];
+
+			$faqCache->set('faqCache', $faqEntry);
+		}
+	}
+
+	public static function runStatsCache()
+	{
+		$faqStats = XenForo_Model::create('XenForo_Model_DataRegistry');
+		$faqModel = XenForo_Model::create('Iversia_FAQ_Model_Question');
+
+		$viewCount 		= $faqModel->getViewTotal();
+		$questionCount 	= $faqModel->getTotal();
+
+		$faqStats->set('faqStats', array(
+			'views' 	=> $viewCount,
+			'questions' => $questionCount,
+			)
+		);
+	}
+}
