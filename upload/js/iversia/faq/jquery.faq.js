@@ -5,10 +5,10 @@ jQuery(document).ready(function() {
 		var speed = 400;
 
 		$('div.faqContent').each(function() {
-			$(this).find('div.faqAnswer').hide();
+			$(this).find('.faqSlide div.faqAnswer').hide();
 		});
 
-		$('.faqItem h3').click(function (event) {
+		$('.faqSlide h3').click(function (event) {
 			event.preventDefault();
 			$(this).parent().children('.faqAnswer').stop(true, true).slideToggle(speed);
 

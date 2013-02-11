@@ -1,4 +1,5 @@
-#FAQ Manager Help
+#[Iversia] FAQ Manager Help
+A list of common issues and installation questions.
 
 ##I have questions added, but the [faq] BB Code says question not found.
 	
