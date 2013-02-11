@@ -8,9 +8,9 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
 		$orderClause 	= $this->prepareUserOrderOptions($fetchOptions);
 
 		$query = $this->fetchAllKeyed($this->limitQueryResults(
-			'
-			SELECT *
+			'SELECT *, c.title
 			 FROM xf_faq_question
+			 LEFT JOIN xf_faq_category c ON (c.category_id = xf_faq_question.category_id)
 			 '. $orderClause .'
 			', $limitOptions['limit'], $limitOptions['offset']
 		), 'faq_id');
@@ -89,6 +89,14 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
 			SELECT f.*, c.title FROM xf_faq_question f
 			LEFT JOIN xf_faq_category c ON (c.category_id = f.category_id)
 			WHERE f.faq_id = ?', $faq_id);
+	}
+
+	public function getQuestionsByIds(array $questionIds)
+	{
+		return $this->fetchAllKeyed('
+			SELECT *
+			FROM xf_faq_question
+			WHERE faq_id IN ('.$this->_getDb()->quote($questionIds).')', 'faq_id');
 	}
 
 	public function getByCategoryId($category_id)

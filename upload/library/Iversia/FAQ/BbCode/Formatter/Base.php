@@ -1,9 +1,20 @@
 <?php
 
+/**
+ * Iversia_FAQ_BbCode_Formatter_Base class.
+ *
+ * @extends XFCP_Iversia_FAQ_BbCode_Formatter_Base
+ */
 class Iversia_FAQ_BbCode_Formatter_Base extends XFCP_Iversia_FAQ_BbCode_Formatter_Base {
 
 	protected $_tags;
 
+    /**
+     * getTags function.
+     *
+     * @access public
+     * @return void
+     */
     public function getTags()
     {
     	if ($this->_tags !== null)
@@ -24,6 +35,13 @@ class Iversia_FAQ_BbCode_Formatter_Base extends XFCP_Iversia_FAQ_BbCode_Formatte
         return $this->_tags;
     }
 
+    /**
+     * preLoadTemplates function.
+     *
+     * @access public
+     * @param XenForo_View $view
+     * @return void
+     */
     public function preLoadTemplates(XenForo_View $view)
     {
 		$view->preLoadTemplate('iversia_faq_bbcode');
@@ -31,6 +49,14 @@ class Iversia_FAQ_BbCode_Formatter_Base extends XFCP_Iversia_FAQ_BbCode_Formatte
 		return parent::preLoadTemplates($view);
 	}
 
+    /**
+     * renderTagFAQ function.
+     *
+     * @access public
+     * @param array $tag
+     * @param array $rendererStates
+     * @return void
+     */
     public function renderTagFAQ(array $tag, array $rendererStates)
     {
     	$question_id = $tag['option'];
@@ -61,7 +87,7 @@ class Iversia_FAQ_BbCode_Formatter_Base extends XFCP_Iversia_FAQ_BbCode_Formatte
 			}
 			else
 			{
-				return '<b>'. new XenForo_Phrase('iversia_faq') .'</b>: Question not found.';
+				return '<b>'. new XenForo_Phrase('iversia_faq') .'</b>: '. new XenForo_Phrase('iversia_faq_not_found') .'';
 			}
 		}
     }

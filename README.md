@@ -7,8 +7,9 @@ Features
 ------------
 * Full FAQ with adding, editing and deleting
 * Question categories
+* Visitors can Like answers
 * BBCode supported answer fields
-* Permissions for managing questions, and for managing categories
+* Permissions for managing questions, managing categories, and liking answers
 * Custom BBCode for linking to specific FAQ entries: `[faq=10][/faq]`
 * (Option) Multiple sort options (alphabetical, submit date, view count)
 * (Option) Show answers on the same page (slide down), or a new page
@@ -19,6 +20,7 @@ Features
 * (Block) FAQ Statistics
 * RSS feed for most recently added questions
 * Uses XenForo phrases for easy language translations
+* And more
 
 Demo
 ------------
@@ -35,7 +37,7 @@ Installation
 
 1. Install using Chris Deeming's [Add-On Installer](http://xenforo.com/community/resources/add-on-installer.960/).
 
-> ![Chris Deeming's Add-On Installer](http://www.deemit.co.uk/autoinstall.png)
+[![Chris Deeming's Add-On Installer](http://www.deemit.co.uk/autoinstall.png)](http://xenforo.com/community/resources/add-on-installer.960/)
 
 Or:
 
@@ -49,6 +51,12 @@ Configuration
 2. Start adding categories and questions to your FAQ.
 3. (Optional) Configure the add-on: `Home > Options > [Iversia] FAQ Manager`.
 
+Support
+------------
+* [Common Questions](https://github.com/iversia/XenForo-FAQ-Manager/blob/master/HELP.md) - A list of common issues and installation questions.
+* [FAQ Manager Discussion](http://xenforo.com/community/threads/iversia-faq-manager.44228/) - All questions, support, and feature requests should be made here.
+
+
 Requirements
 ------------
 * [XenForo](http://xenforo.com/) 1.1.3
@@ -57,13 +65,3 @@ Copyright / License
 ------------
 
 This project is released underneath the [DBAD PUBLIC LICENSE](http://www.dbad-license.org) by Phil Sturgeon.
-
-Questions
-------------
-**I have questions added, but the [faq] BB Code says question not found.**
-
-To reduce retrieval duplication, questions are cached before they can be used in the [faq] BB Code. The cache is updated once an hour. If you would like to force a cache update, please go to `Tools > Cron Entries` in your Admin CP and manually run the `[Iversia] FAQ Update BB Code Cache` cron.
-
-**The FAQ statistics are not updating!**
-
-FAQ Statistics are updated once a day via a cron. You may run this manually by going to `Tools > Cron Entries` in your Admin CP and running the `[Iversia] FAQ Update Statistics` cron.

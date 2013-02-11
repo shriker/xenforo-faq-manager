@@ -2,9 +2,16 @@
 
 class Iversia_FAQ_Model_Category extends XenForo_Model
 {
-	public function getAll()
+	public function getAll($limit = 0)
 	{
-		return $this->fetchAllKeyed("SELECT * FROM xf_faq_category ORDER BY display_order DESC, title ASC", 'category_id');
+		if( $limit != 0)
+		{
+			return $this->fetchAllKeyed("SELECT * FROM xf_faq_category ORDER BY display_order ASC, title ASC LIMIT ?", 'category_id', $limit);
+		}
+		else
+		{
+			return $this->fetchAllKeyed("SELECT * FROM xf_faq_category ORDER BY display_order ASC, title ASC", 'category_id');
+		}
 	}
 
 	public function getById($category_id)

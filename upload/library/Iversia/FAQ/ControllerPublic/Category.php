@@ -30,7 +30,7 @@ class Iversia_FAQ_ControllerPublic_Category extends XenForo_ControllerPublic_Abs
 			'canManageCats'		=> $this->_getCategoryModel()->canManageCategories(),
 		);
 
-		return $this->responseView('Iversia_FAQ_ViewPublic_Category', 'iversia_faq_category', $viewParams);
+		return $this->responseView('Iversia_FAQ_ViewPublic_Index', 'iversia_faq_category', $viewParams);
 	}
 
 	public function actionCreate()
@@ -90,7 +90,8 @@ class Iversia_FAQ_ControllerPublic_Category extends XenForo_ControllerPublic_Abs
 			$saveAction	= new XenForo_Phrase('iversia_faq_category_edited');
 		}
 		$dw->bulkSet(array(
-			'title'	=> $this->_input->filterSingle('title', XenForo_Input::STRING)
+			'title'	=> $this->_input->filterSingle('title', XenForo_Input::STRING),
+			'display_order'	=> $this->_input->filterSingle('display_order', XenForo_Input::UINT),
 		));
 		$dw->save();
 

@@ -47,15 +47,116 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 	{
 		$faq_id = $this->_input->filterSingle('faq_id', XenForo_Input::UINT);
 
+		$user_id = XenForo_Visitor::getUserId();
+
+		$question = $this->_getQuestionModel()->getById($faq_id);
+
 		$this->_getQuestionModel()->logQuestionView($faq_id);
 
+
+		// Likes
+		$likeModel = $this->_getLikeModel();
+		$likes['likeUsers'] = $question['like_users'];
+
+
+		$likes['like_date'] = $likeModel->getContentLikeByLikeUser('xf_faq_question', $faq_id, $user_id);
+
+		$likes['like_date'] = XenForo_Application::$time;
+
 		$viewParams = array(
-			'question' 		=> $this->_getQuestionModel()->getById($faq_id),
+			'question' 		=> $question,
 			'categories' 	=> $this->_getCategoryModel()->getAll(),
 			'canManageFAQ'	=> $this->_getQuestionModel()->canManageFAQ(),
+			'likes'			=> $likes
 		);
 
 		return $this->responseView('Iversia_FAQ_ViewPublic_Permalink', 'iversia_faq_question', $viewParams);
+	}
+
+	public function actionLike()
+	{
+		$faq_id = $this->_input->filterSingle('faq_id', XenForo_Input::UINT);
+
+		$visitor = XenForo_Visitor::getInstance();
+
+		// Can user like FAQ entry?
+
+		$question 	= $this->_getQuestionModel()->getById($faq_id);
+		$likeModel 	= $this->_getLikeModel();
+
+		$existingLike = $likeModel->getContentLikeByLikeUser('xf_faq_question', $faq_id, XenForo_Visitor::getUserId());
+
+		if ($this->_request->isPost())
+		{
+			if ($existingLike)
+			{
+				$latestUsers = $likeModel->unlikeContent($existingLike);
+			}
+			else
+			{
+				$latestUsers = $likeModel->likeContent('xf_faq_question', $faq_id, $question['user_id']);
+			}
+
+			$liked = ($existingLike ? false : true);
+
+			if ($this->_noRedirect() && $latestUsers !== false)
+			{
+				$question['like_users'] = $latestUsers;
+				$question['likes']     += ($liked ? 1 : -1);
+				$question['like_date']  = ($liked ? XenForo_Application::$time : 0);
+
+				$viewParams = array(
+					'question' 	=> $question,
+					'liked' 	=> $liked
+				);
+
+				return $this->responseView('Iversia_FAQ_ViewPublic_LikeConfirmed', '', $viewParams);
+			}
+			else
+			{
+				return $this->responseRedirect(
+					XenForo_ControllerResponse_Redirect::SUCCESS,
+					XenForo_Link::buildPublicLink('faq', $question)
+				);
+			}
+		}
+		else
+		{
+			$owner = array(
+				'username'  => $image['username'],
+				'user_id'   => $question['user_id']
+			);
+
+			$viewParams = array(
+				'question'         => $question,
+				'like'          => $existingLike
+			);
+			return $this->responseView('Iversia_FAQ_ViewPublic_Like', 'iversia_faq_question_likes', $viewParams);
+		}
+	}
+
+	public function actionLikes()
+	{
+		$faq_id = $this->_input->filterSingle('faq_id', XenForo_Input::STRING);
+
+		if (!$page = $this->_getQuestionModel()->getById($faq_id))
+		{
+			return $this->responseRedirect(XenForo_ControllerResponse_Redirect::SUCCESS, XenForo_Link::buildPublicLink('faq'));
+		}
+
+		$likes = $this->getModelFromCache('XenForo_Model_Like')->getContentLikes('xf_faq_question', $faq_id);
+
+		if (!$likes)
+		{
+			return $this->responseError(new XenForo_Phrase('no_one_has_liked_this_post_yet'));
+		}
+
+		$viewParams = array(
+			'page' => $page,
+			'likes' => $likes
+		);
+
+		return $this->responseView('Iversia_FAQ_ViewPublic_PageLikes', 'EWRcarta_PageLikes', $viewParams);
 	}
 
 	public function actionCreate()
@@ -190,6 +291,11 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 		return $this->getModelFromCache('Iversia_FAQ_Model_Category');
 	}
 
+	protected function _getLikeModel()
+	{
+		return $this->getModelFromCache('XenForo_Model_Like');
+	}
+
 	public static function getSessionActivityDetailsForList(array $activities)
 	{
 		foreach ($activities AS $key => $activity)
@@ -210,7 +316,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 				{
 					$faqLinkText 	= new XenForo_Phrase('iversia_faq') . ' #'. $faq_id .': ' . $question;
 					$faqLink		= XenForo_Link::buildPublicLink('full:faq', array(
-						'faq_id' => $faq_id, 
+						'faq_id' => $faq_id,
 						'question' => $question
 					));
 				}
