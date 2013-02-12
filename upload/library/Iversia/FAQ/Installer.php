@@ -69,17 +69,9 @@ class Iversia_FAQ_Installer
 					('General', 0);
 			");
 
-			// New content type
-			$db->query("
-				INSERT INTO xf_content_type
-					(content_type, addon_id, fields)
-				VALUES
-					('xf_faq_question', 'iversiaFAQ', '')
-			");
-
 			// Insert content type handlers
 			$db->query("
-				INSERT INTO xf_content_type_field
+				INSERT INTO xf_faq_question
 					(content_type, field_name, field_value)
 				VALUES
 					('xf_faq_question', 'alert_handler_class', 'Iversia_FAQ_AlertHandler_Question'),
@@ -95,6 +87,9 @@ class Iversia_FAQ_Installer
 			// Version 1.0.1
 			if($version < 101)
 			{
+				// Default serialized for like_users
+				$db->query("UPDATE xf_faq_question SET like_users='a:0:{}';");
+
 				// New content type
 				$db->query("
 					INSERT INTO xf_content_type
@@ -103,7 +98,7 @@ class Iversia_FAQ_Installer
 						('xf_faq_question', 'iversiaFAQ', '');
 				");
 
-				// Insert content type handlers
+				// New content type handlers
 				$db->query("
 					INSERT INTO xf_content_type_field
 						(content_type, field_name, field_value)
@@ -147,13 +142,13 @@ class Iversia_FAQ_Installer
 		// Remove content type
 		$db->query("
 			DELETE FROM xf_content_type
-			WHERE content_type IN ('xf_faq_question')
+			WHERE content_type IN ('xf_faq_question');
 		");
 
 		// Remove content type fields
 		$db->query("
 			DELETE FROM xf_content_type_field
-			WHERE content_type IN ('xf_faq_question')
+			WHERE content_type IN ('xf_faq_question');
 		");
 
 		// Bye caches!

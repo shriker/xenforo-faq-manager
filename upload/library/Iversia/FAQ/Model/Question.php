@@ -125,4 +125,16 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
 
 		return FALSE;
 	}
+
+	public function canLikeFAQ()
+	{
+		$visitor = XenForo_Visitor::getInstance();
+
+		if ($visitor->hasPermission('FAQ_Manager_Permissions', 'canLikeFAQ'))
+		{
+		    return TRUE;
+		}
+
+		return FALSE;
+	}
 }

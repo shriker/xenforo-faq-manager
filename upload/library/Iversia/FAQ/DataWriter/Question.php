@@ -6,27 +6,25 @@ class Iversia_FAQ_DataWriter_Question extends XenForo_DataWriter
 	{
 		return array(
 			'xf_faq_question'    => array(
-				'faq_id'            => array('type' => self::TYPE_UINT, 'autoIncrement' => true),
-				'category_id'       => array('type' => self::TYPE_UINT, 'default' => array('xf_faq_category', 'category_id'), 'required' => true),
+				'faq_id'        => array('type' => self::TYPE_UINT, 'autoIncrement' => true),
+				'category_id'   => array('type' => self::TYPE_UINT, 'default' => array('xf_faq_category', 'category_id'), 'required' => true),
 
-				'moderation'        => array('type' => self::TYPE_UINT, 'required' => true),
-				'user_id'           => array('type' => self::TYPE_UINT, 	'required' => true),
+				'moderation'    => array('type' => self::TYPE_UINT, 'required' => true),
+				'user_id'       => array('type' => self::TYPE_UINT, 	'required' => true),
 
-				'view_count'        => array('type' => self::TYPE_UINT, 	'required' => false),
-				'likes'             => array('type' => self::TYPE_UINT, 	'required' => false, 'default' => 0),
-				'like_users'        => array('required' => false, 'default' => ''),
+				'view_count'    => array('type' => self::TYPE_UINT, 	'required' => false),
+				'likes'         => array('type' => self::TYPE_UINT, 	'required' => false, 'default' => 0),
+				'like_users'    => array('type' => self::TYPE_SERIALIZED, 'default' => 'a:0:{}'),
 
-				'question'          => array('type' => self::TYPE_STRING, 	'required' => true, 'maxLength' => 150),
-				'answer'            => array('type' => self::TYPE_STRING, 	'required' => false),
+				'question'      => array('type' => self::TYPE_STRING, 	'required' => true, 'maxLength' => 150),
+				'answer'        => array('type' => self::TYPE_STRING, 	'required' => false),
 
 				// Times
-				'submit_date'       => array('type' => self::TYPE_UINT, 'required' => true, 'default' => XenForo_Application::$time),
-				'answer_date'       => array('type' => self::TYPE_UINT, 'required' => false, 'default' => XenForo_Application::$time),
+				'submit_date'   => array('type' => self::TYPE_UINT, 'required' => true, 'default' => XenForo_Application::$time),
+				'answer_date'   => array('type' => self::TYPE_UINT, 'required' => false, 'default' => XenForo_Application::$time),
 			)
 		);
 	}
-
-	//'verification' => array('$this', '_verifyEmail')
 
 	protected function _getExistingData($data)
 	{

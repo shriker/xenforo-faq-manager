@@ -4,16 +4,16 @@ class Iversia_FAQ_ViewPublic_LikeConfirmed extends XenForo_ViewPublic_Base
 {
 	public function renderJson()
 	{
-		$message = $this->_params['question'];
+		$question = $this->_params['question'];
 
-		if (!empty($message['likeUsers']))
+		if ( ! empty($question['like_users']))
 		{
 			$params = array(
-				'message' => $message,
-				'likesUrl' => XenForo_Link::buildPublicLink('faq/likes', $message)
+				'question' => $question,
+				'likesUrl' => XenForo_Link::buildPublicLink('faq/likes', $question)
 			);
 
-			$output = $this->_renderer->getDefaultOutputArray(get_class($this), $params, 'likes_summary');
+			$output = $this->_renderer->getDefaultOutputArray(get_class($this), $params, 'iversia_faq_question_likes_summary');
 		}
 		else
 		{

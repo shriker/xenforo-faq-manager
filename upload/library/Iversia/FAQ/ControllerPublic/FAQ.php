@@ -53,21 +53,17 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 
 		$this->_getQuestionModel()->logQuestionView($faq_id);
 
-
 		// Likes
 		$likeModel = $this->_getLikeModel();
-		$likes['likeUsers'] = $question['like_users'];
+		$question['like_users'] = unserialize($question['like_users']);
+		$question['like_date'] = $likeModel->getContentLikeByLikeUser('xf_faq_question', $faq_id, $user_id);
 
-
-		$likes['like_date'] = $likeModel->getContentLikeByLikeUser('xf_faq_question', $faq_id, $user_id);
-
-		$likes['like_date'] = XenForo_Application::$time;
 
 		$viewParams = array(
 			'question' 		=> $question,
 			'categories' 	=> $this->_getCategoryModel()->getAll(),
 			'canManageFAQ'	=> $this->_getQuestionModel()->canManageFAQ(),
-			'likes'			=> $likes
+			'canLikeFAQ'	=> $this->_getQuestionModel()->canLikeFAQ(),
 		);
 
 		return $this->responseView('Iversia_FAQ_ViewPublic_Permalink', 'iversia_faq_question', $viewParams);
@@ -80,9 +76,16 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 		$visitor = XenForo_Visitor::getInstance();
 
 		// Can user like FAQ entry?
+		$this->_assertCanLikeFAQ();
 
 		$question 	= $this->_getQuestionModel()->getById($faq_id);
 		$likeModel 	= $this->_getLikeModel();
+
+		// Users cannot like their own FAQ entries
+		if($question['user_id'] == $visitor['user_id'])
+		{
+			throw $this->getNoPermissionResponseException();
+		}
 
 		$existingLike = $likeModel->getContentLikeByLikeUser('xf_faq_question', $faq_id, XenForo_Visitor::getUserId());
 
@@ -122,41 +125,38 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 		}
 		else
 		{
-			$owner = array(
-				'username'  => $image['username'],
-				'user_id'   => $question['user_id']
+			$viewParams  = array(
+				'question'  => $question,
+				'like'      => $existingLike
 			);
 
-			$viewParams = array(
-				'question'         => $question,
-				'like'          => $existingLike
-			);
-			return $this->responseView('Iversia_FAQ_ViewPublic_Like', 'iversia_faq_question_likes', $viewParams);
+			return $this->responseView('Iversia_FAQ_ViewPublic_Like', 'iversia_faq_question_like', $viewParams);
 		}
 	}
 
 	public function actionLikes()
 	{
 		$faq_id = $this->_input->filterSingle('faq_id', XenForo_Input::STRING);
+		$question = $this->_getQuestionModel()->getById($faq_id);
 
-		if (!$page = $this->_getQuestionModel()->getById($faq_id))
+		if ( ! $question)
 		{
 			return $this->responseRedirect(XenForo_ControllerResponse_Redirect::SUCCESS, XenForo_Link::buildPublicLink('faq'));
 		}
 
 		$likes = $this->getModelFromCache('XenForo_Model_Like')->getContentLikes('xf_faq_question', $faq_id);
 
-		if (!$likes)
+		if ( ! $likes)
 		{
 			return $this->responseError(new XenForo_Phrase('no_one_has_liked_this_post_yet'));
 		}
 
 		$viewParams = array(
-			'page' => $page,
-			'likes' => $likes
+			'question'	=> $question,
+			'likes'  	=> $likes
 		);
 
-		return $this->responseView('Iversia_FAQ_ViewPublic_PageLikes', 'EWRcarta_PageLikes', $viewParams);
+		return $this->responseView('Iversia_FAQ_ViewPublic_PageLikes', 'iversia_faq_question_all_likes', $viewParams);
 	}
 
 	public function actionCreate()
@@ -281,6 +281,16 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 		}
 	}
 
+	//canLikeFAQ
+
+	protected function _assertCanLikeFAQ()
+	{
+		if ( ! $this->_getQuestionModel()->canLikeFAQ())
+		{
+			throw $this->getNoPermissionResponseException();
+		}
+	}
+
 	protected function _getQuestionModel()
 	{
 		return $this->getModelFromCache('Iversia_FAQ_Model_Question');
@@ -298,6 +308,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 
 	public static function getSessionActivityDetailsForList(array $activities)
 	{
+
 		foreach ($activities AS $key => $activity)
 		{
 			// Defaults
@@ -331,5 +342,6 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 		}
 
 		return $output;
+
 	}
 }

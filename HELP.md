@@ -12,6 +12,10 @@ To reduce retrieval duplication, questions are cached before they can be used in
 1. Users are unable to Like questions/answers that they themselves have added.
 1. Guests are never allowed to Like questions.
 
+##I'm getting bombarded with Like notifications!
+
+To turn off Like notifications, please go to your account's Alert Preferences page and uncheck `Likes your FAQ answer`.
+
 
 ##The FAQ statistics are not updating!
 

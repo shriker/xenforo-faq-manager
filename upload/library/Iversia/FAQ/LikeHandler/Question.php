@@ -16,10 +16,6 @@ class Iversia_FAQ_LikeHandler_Question extends XenForo_LikeHandler_Abstract
 		$qustionModel = XenForo_Model::create('Iversia_FAQ_Model_Question');
 
 		return $questionModel->getById($contentIds);
-
-		/*
-		alert_{contentType}_like
-		*/
 	}
 
 	public function getListTemplateName()

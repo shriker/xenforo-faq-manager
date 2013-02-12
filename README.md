@@ -7,20 +7,18 @@ Features
 ------------
 * Full FAQ with adding, editing and deleting
 * Question categories
-* Visitors can Like answers
+* Site members can Like answers
 * BBCode supported answer fields
 * Permissions for managing questions, managing categories, and liking answers
 * Custom BBCode for linking to specific FAQ entries: `[faq=10][/faq]`
+* Two (2) included widgets for the [Widget Framework](http://xenforo.com/community/resources/bd-widget-framework.297/)
 * (Option) Multiple sort options (alphabetical, submit date, view count)
-* (Option) Show answers on the same page (slide down), or a new page
+* (Option) Show answers on the same page (slide down), always open (same page), or a new page
 * (Option) Questions per page
 * (Option) Social media share buttons enabled per question
-* (Block) Most popular questions
-* (Block) Recently added questions
-* (Block) FAQ Statistics
 * RSS feed for most recently added questions
 * Uses XenForo phrases for easy language translations
-* And more
+* And more!
 
 Demo
 ------------

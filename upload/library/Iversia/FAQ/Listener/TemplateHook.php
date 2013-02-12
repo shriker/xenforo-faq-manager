@@ -2,6 +2,17 @@
 
 class Iversia_FAQ_Listener_TemplateHook {
 
+	/**
+	 * templateHook function.
+	 *
+	 * @access public
+	 * @static
+	 * @param mixed $hookName
+	 * @param mixed &$contents
+	 * @param array $hookParams
+	 * @param XenForo_Template_Abstract $template
+	 * @return void
+	 */
 	public static function templateHook($hookName, &$contents, array $hookParams, XenForo_Template_Abstract $template)
 	{
 		switch($hookName)
@@ -19,9 +30,45 @@ class Iversia_FAQ_Listener_TemplateHook {
 				$contents = '<li><a href="'. XenForo_Link::buildPublicLink('faq') .'" class="primaryContent">'. new XenForo_Phrase('iversia_faq') .'</a></li>' . $contents;
 				break;
 			}
+			case 'account_alerts_extra':
+			{
+				$alertOptOuts = array('alertOptOuts' => $template->getParam('alertOptOuts'));
+				$contents .= $template->create('iversia_faq_alert_preferences', $alertOptOuts);
+				break;
+			}
 		}
 	}
 
+	/**
+	 * templateCreate function.
+	 *
+	 * @access public
+	 * @static
+	 * @param mixed &$templateName
+	 * @param mixed &$params
+	 * @param mixed $template
+	 * @return void
+	 */
+	public static function templateCreate(&$templateName, &$params, $template)
+	{
+		switch($templateName)
+		{
+			case 'account_alert_preferences':
+				$template->preloadTemplate('iversia_faq_alert_preferences');
+			break;
+		}
+
+	}
+
+	/**
+	 * navTabs function.
+	 *
+	 * @access public
+	 * @static
+	 * @param array &$extraTabs
+	 * @param mixed $selected
+	 * @return void
+	 */
 	public static function navTabs(array &$extraTabs, $selected)
 	{
 		$visitor = XenForo_Visitor::getInstance();

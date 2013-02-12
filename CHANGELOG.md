@@ -3,6 +3,7 @@ Development
 - [FIX] Fixed question BBCode not parsing on category pages
 - [NEW] Ability to "Like" answers
 - [NEW] Alert notifications for Likes
+- [NEW] Two (2) widgets for [bd] Widget Framework: Most Popular & Latest Questions
 - [NEW] Added new question click action: "All Questions Open"
 - [NEW] Added FAQ categories to NavBar
 - [NEW] Added category limit for NavBar
