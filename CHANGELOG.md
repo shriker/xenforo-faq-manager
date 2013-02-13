@@ -1,4 +1,4 @@
-Development
+Version 1.0.1
 ---------------
 - [FIX] Fixed question BBCode not parsing on category pages
 - [NEW] Ability to "Like" answers
