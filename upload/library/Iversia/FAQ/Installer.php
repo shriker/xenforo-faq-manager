@@ -69,9 +69,17 @@ class Iversia_FAQ_Installer
 					('General', 0);
 			");
 
+			// New content type
+				$db->query("
+					INSERT INTO xf_content_type
+						(content_type, addon_id, fields)
+					VALUES
+						('xf_faq_question', 'iversiaFAQ', '');
+				");
+
 			// Insert content type handlers
 			$db->query("
-				INSERT INTO xf_faq_question
+				INSERT INTO xf_content_type_field
 					(content_type, field_name, field_value)
 				VALUES
 					('xf_faq_question', 'alert_handler_class', 'Iversia_FAQ_AlertHandler_Question'),
