@@ -7,7 +7,7 @@ class Iversia_FAQ_ControllerPublic_Category extends XenForo_ControllerPublic_Abs
 		parent::__construct($request, $response, $routeMatch);
 	}
 
-	public function actionIndex()
+	public function actionCategory()
 	{
 		$category_id 	= $this->_input->filterSingle('category_id', XenForo_Input::UINT);
 		$page 			= $this->_input->filterSingle('page', XenForo_Input::UINT);
@@ -33,7 +33,7 @@ class Iversia_FAQ_ControllerPublic_Category extends XenForo_ControllerPublic_Abs
 		return $this->responseView('Iversia_FAQ_ViewPublic_Index', 'iversia_faq_category', $viewParams);
 	}
 
-	public function actionCreate()
+	public function actionCategoryCreate()
 	{
 		$this->_assertCanManageCategories();
 
@@ -42,7 +42,7 @@ class Iversia_FAQ_ControllerPublic_Category extends XenForo_ControllerPublic_Abs
 		return $this->responseView('Iversia_FAQ_ViewPublic_Category', 'iversia_faq_create_category', $viewParams);
 	}
 
-	public function actionEdit()
+	public function actionCategoryEdit()
 	{
 		$this->_assertCanManageCategories();
 
@@ -55,7 +55,7 @@ class Iversia_FAQ_ControllerPublic_Category extends XenForo_ControllerPublic_Abs
 		return $this->responseView('Iversia_FAQ_ViewPublic_Category', 'iversia_faq_edit_category', $viewParams);
 	}
 
-	public function actionDelete()
+	public function actionCategoryDelete()
 	{
 		$this->_assertCanManageCategories();
 
@@ -76,7 +76,7 @@ class Iversia_FAQ_ControllerPublic_Category extends XenForo_ControllerPublic_Abs
 		);
 	}
 
-	public function actionSave()
+	public function actionCategorySave()
 	{
 		$this->_assertCanManageCategories();
 

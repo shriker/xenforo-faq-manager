@@ -1,3 +1,13 @@
+DEV
+---------------
+- [FIX] JavaScript paths are not longer relative to root folder
+- [NEW] Added wrappers for BBCode/HTML/etc.
+- [CHANGE] Consolidated routes
+
+Version 1.0.1a
+---------------
+- [FIX] Missing content type for new installs
+
 Version 1.0.1
 ---------------
 - [FIX] Fixed question BBCode not parsing on category pages
@@ -13,7 +23,7 @@ Version 1.0.1
 
 Version 1.0.0a
 ---------------
-- [Fix] Folder structure for add-on installer
+- [FIX] Folder structure for add-on installer
 
 Version 1.0.0
 ---------------

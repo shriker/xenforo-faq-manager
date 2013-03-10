@@ -114,6 +114,10 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
 		$this->_getDb()->query('DELETE FROM xf_faq_question WHERE category_id = ?', $category_id);
 	}
 
+	public function footer(){
+		return '<div id="iversiaFAQ" class="muted">FAQ Manager &copy; <a href="http://www.iversia.com" title="Iversia - Web Developer and Illustrator">Iversia</a> from <a href="http://shadowlack.com" title="Shadowlack, a Science Fantasy Play-by-Post RPG">Shadowlack</a></div>';
+	}
+
 	public function canManageFAQ()
 	{
 		$visitor = XenForo_Visitor::getInstance();

@@ -14,6 +14,6 @@ class Iversia_FAQ_ViewPublic_Permalink extends XenForo_ViewPublic_Base
         $formatter = XenForo_BbCode_Formatter_Base::create();
         $parser = new XenForo_BbCode_Parser($formatter);
 
-        $this->_params['question']['answer'] = $parser->render($this->_params['question']['answer']);
+        $this->_params['question']['answer'] = new XenForo_BbCode_TextWrapper($this->_params['question']['answer'], $bbCodeParser, $bbCodeOptions);
 	}
 }

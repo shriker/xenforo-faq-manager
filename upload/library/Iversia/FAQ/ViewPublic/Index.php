@@ -16,7 +16,7 @@ class Iversia_FAQ_ViewPublic_Index extends XenForo_ViewPublic_Base
 
 		foreach ($this->_params['faq'] AS &$question)
 		{
-            $question['answer'] = $parser->render($question['answer']);
+            $question['answer'] = new XenForo_BbCode_TextWrapper($question['answer'], $bbCodeParser, $bbCodeOptions);
         }
 	}
 }

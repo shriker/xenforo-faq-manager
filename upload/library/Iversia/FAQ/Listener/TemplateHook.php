@@ -36,6 +36,12 @@ class Iversia_FAQ_Listener_TemplateHook {
 				$contents .= $template->create('iversia_faq_alert_preferences', $alertOptOuts);
 				break;
 			}
+
+			case 'iversia_faq_footer':
+			{
+				$template = XenForo_Model::create('Iversia_FAQ_Model_Question')->footer();
+				$contents = $template .$contents;
+			}
 		}
 	}
 

@@ -70,18 +70,19 @@ class Iversia_FAQ_Installer
 			");
 
 			// New content type
-				$db->query("
-					INSERT INTO xf_content_type
-						(content_type, addon_id, fields)
-					VALUES
-						('xf_faq_question', 'iversiaFAQ', '');
-				");
+			$db->query("
+				INSERT INTO xf_content_type
+					(content_type, addon_id, fields)
+				VALUES
+					('xf_faq_question', 'iversiaFAQ', '');
+			");
 
 			// Insert content type handlers
 			$db->query("
 				INSERT INTO xf_content_type_field
 					(content_type, field_name, field_value)
 				VALUES
+					('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question'),
 					('xf_faq_question', 'alert_handler_class', 'Iversia_FAQ_AlertHandler_Question'),
 					('xf_faq_question', 'like_handler_class', 'Iversia_FAQ_LikeHandler_Question');
 			");
@@ -117,7 +118,18 @@ class Iversia_FAQ_Installer
 
 				XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
 			}
+			if($version < 110)
+			{
+				// Add attachment handler
+				$db->query("
+					INSERT INTO xf_content_type_field
+						(content_type, field_name, field_value)
+					VALUES
+						('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question');
+				");
 
+				XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
+			}
 		}
 
 		unset($db);
