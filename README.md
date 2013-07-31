@@ -1,4 +1,4 @@
-XenForo-FAQ-Manager
+XenForo FAQ Manager
 ===================
 
 XenForo add-on for Frequently Asked Questions management.
@@ -33,12 +33,6 @@ To get the latest stable version, please download it from the official [XenForo 
 Installation
 ------------
 
-1. Install using Chris Deeming's [Add-On Installer](http://xenforo.com/community/resources/add-on-installer.960/).
-
-[![Chris Deeming's Add-On Installer](http://www.deemit.co.uk/autoinstall.png)](http://xenforo.com/community/resources/add-on-installer.960/)
-
-Or:
-
 1. Upload files/directories underneath `upload` to your XenForo's root.
 2. Import the add-on XML using the add-on importer in your Admin CP.
 
@@ -57,7 +51,7 @@ Support
 
 Requirements
 ------------
-* [XenForo](http://xenforo.com/) 1.1.3
+* [XenForo](http://xenforo.com/) 1.2.0
 
 Copyright / License
 ------------

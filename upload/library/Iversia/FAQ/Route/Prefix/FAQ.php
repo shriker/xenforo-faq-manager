@@ -4,42 +4,73 @@ class Iversia_FAQ_Route_Prefix_FAQ implements XenForo_Route_Interface
 {
     public function match($routePath, Zend_Controller_Request_Http $request, XenForo_Router $router)
     {
-        $components = explode('/', $routePath);
-        $subPrefix  = strtolower(array_shift($components));
-        $subSplits  = explode('.', $subPrefix);
+        $action = $router->resolveActionWithIntegerParam($routePath, $request, 'faq_id');
+        $actions = explode('/', $action);
 
-        if (is_array($components) && isset($components[0]))
+        switch ($actions[0])
         {
-            if ( $components[0] == 'category' || $subPrefix == 'category')
-            {
+            case 'category':
                 $action = $router->resolveActionWithIntegerParam($routePath, $request, 'category_id');
                 $action = $router->resolveActionAsPageNumber($action, $request);
-                return $router->getRouteMatch('Iversia_FAQ_ControllerPublic_Category', $action, 'faq');
-            }
+                break;
+            default:
+                $action = $router->resolveActionWithIntegerParam($routePath, $request, 'faq_id');
+                $action = $router->resolveActionAsPageNumber($action, $request);
+                break;
         }
 
-        $action = $router->resolveActionWithIntegerParam($routePath, $request, 'faq_id');
-        $action = $router->resolveActionAsPageNumber($action, $request);
-        return $router->getRouteMatch('Iversia_FAQ_ControllerPublic_FAQ', $action, 'faq', $routePath);
+        return $router->getRouteMatch('Iversia_FAQ_ControllerPublic_FAQ', $action, 'faq');
     }
 
     public function buildLink($originalPrefix, $outputPrefix, $action, $extension, $data, array &$extraParams)
     {
-        if ($action == 'category' OR $action == 'category/edit' OR $action == 'category/delete')
-        {
-            $action = XenForo_Link::getPageNumberAsAction($action, $extraParams);
+        $components = explode('/', $action);
+        $subPrefix = strtolower(array_shift($components));
+        $intParams = '';
+        $strParams = '';
+        $slice = false;
 
-            return XenForo_Link::buildBasicLinkWithIntegerParam($outputPrefix, $action, $extension, $data, 'category_id', 'title');
+        switch ($subPrefix)
+        {
+            case 'category':
+                $intParams = 'category_id';
+                $title = 'title';
+                break;
+            case 'category-edit':
+                $intParams = 'category_id';
+                $title = 'title';
+                break;
+            case 'category-delete':
+                $intParams = 'category_id';
+                $title = 'title';
+                break;
+            case 'category-save':
+                $intParams = 'category_id';
+                $title = 'title';
+                break;
+            default:
+                $intParams = 'faq_id';
+                $title = 'question';
+                break;
         }
 
-        // Question Link
-        if ( ! is_array($data))
-		{
-			$action = XenForo_Link::getPageNumberAsAction($action, $extraParams);
+        if ($slice) {
+            $outputPrefix .= '/'.$subPrefix;
+            $action = implode('/', $components);
+        }
 
-			return XenForo_Link::buildBasicLink($outputPrefix, $action);
-		}
+        $action = XenForo_Link::getPageNumberAsAction($action, $extraParams);
 
-        return XenForo_Link::buildBasicLinkWithIntegerParam($outputPrefix, $action, $extension, $data, 'faq_id', 'question');
+        if ( ! is_array($data)) {
+            $action = XenForo_Link::getPageNumberAsAction($action, $extraParams);
+
+            return XenForo_Link::buildBasicLink($outputPrefix, $action);
+        }
+
+        if ($strParams) {
+            return XenForo_Link::buildBasicLinkWithStringParam($outputPrefix, $action, $extension, $data, $strParams);
+        } else {
+            return XenForo_Link::buildBasicLinkWithIntegerParam($outputPrefix, $action, $extension, $data, $intParams, $title);
+        }
     }
 }

@@ -2,40 +2,33 @@
 
 class Iversia_FAQ_CronEntry_FAQ
 {
-	public static function runQuestionCache()
-	{
-		$faqCache = XenForo_Model::create('XenForo_Model_DataRegistry');
-		$faqModel = XenForo_Model::create('Iversia_FAQ_Model_Question');
+    public static function runQuestionCache()
+    {
+        $faqCache = XenForo_Model::create('XenForo_Model_DataRegistry');
+        $faqModel = XenForo_Model::create('Iversia_FAQ_Model_Question');
 
-		$questions = $faqModel->getAll();
+        $questions = $faqModel->getAll();
 
-		if ( ! $questions)
-		{
-			return;
-		}
+        if (! $questions) {
+            return;
+        }
 
-		$faqEntry = array();
+        $faqEntry = array();
 
-		foreach ($questions AS $question)
-		{
-			$faqEntry[$question['faq_id']] = $question['question'];
+        foreach ($questions as $question) {
+            $faqEntry[$question['faq_id']] = $question['question'];
+            $faqCache->set('faqCache', $faqEntry);
+        }
+    }
 
-			$faqCache->set('faqCache', $faqEntry);
-		}
-	}
+    public static function runStatsCache()
+    {
+        $faqStats = XenForo_Model::create('XenForo_Model_DataRegistry');
+        $faqModel = XenForo_Model::create('Iversia_FAQ_Model_Question');
 
-	public static function runStatsCache()
-	{
-		$faqStats = XenForo_Model::create('XenForo_Model_DataRegistry');
-		$faqModel = XenForo_Model::create('Iversia_FAQ_Model_Question');
+        $viewCount      = $faqModel->getViewTotal();
+        $questionCount  = $faqModel->getTotal();
 
-		$viewCount 		= $faqModel->getViewTotal();
-		$questionCount 	= $faqModel->getTotal();
-
-		$faqStats->set('faqStats', array(
-			'views' 	=> $viewCount,
-			'questions' => $questionCount,
-			)
-		);
-	}
+        $faqStats->set('faqStats', array('views' => $viewCount, 'questions' => $questionCount));
+    }
 }

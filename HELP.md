@@ -16,7 +16,6 @@ To reduce retrieval duplication, questions are cached before they can be used in
 
 To turn off Like notifications, please go to your account's Alert Preferences page and uncheck `Likes your FAQ answer`.
 
-
 ##The FAQ statistics are not updating!
 
 FAQ Statistics are updated once a day via a cron. You may run this manually by going to `Tools > Cron Entries` in your Admin CP and running the `[Iversia] FAQ Update Statistics` cron.

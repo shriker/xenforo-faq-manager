@@ -8,8 +8,7 @@ class Iversia_FAQ_Installer
 
 	public static function getInstance()
 	{
-		if (!self::$instance)
-		{
+		if (!self::$instance) {
 			$c = __CLASS__;
 			self::$instance = new $c;
 		}
@@ -19,8 +18,7 @@ class Iversia_FAQ_Installer
 
 	public static function install($existingAddOn, $addOnData)
 	{
-		if (XenForo_Application::$versionId < 1010170)
-		{
+		if (XenForo_Application::$versionId < 1010170) {
 			throw new XenForo_Exception('This Add-On requires XenForo version 1.1.1 or higher.');
 		}
 
@@ -29,8 +27,7 @@ class Iversia_FAQ_Installer
 		$db = XenForo_Application::get('db');
 
 		// This is the very first installation
-		if ( ! $existingAddOn)
-		{
+		if ( ! $existingAddOn) {
 			$db->query("
 				CREATE TABLE IF NOT EXISTS `xf_faq_question` (
 					`faq_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -70,19 +67,18 @@ class Iversia_FAQ_Installer
 			");
 
 			// New content type
-			$db->query("
-				INSERT INTO xf_content_type
-					(content_type, addon_id, fields)
-				VALUES
-					('xf_faq_question', 'iversiaFAQ', '');
-			");
+				$db->query("
+					INSERT INTO xf_content_type
+						(content_type, addon_id, fields)
+					VALUES
+						('xf_faq_question', 'iversiaFAQ', '');
+				");
 
 			// Insert content type handlers
 			$db->query("
 				INSERT INTO xf_content_type_field
 					(content_type, field_name, field_value)
 				VALUES
-					('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question'),
 					('xf_faq_question', 'alert_handler_class', 'Iversia_FAQ_AlertHandler_Question'),
 					('xf_faq_question', 'like_handler_class', 'Iversia_FAQ_LikeHandler_Question');
 			");
@@ -118,18 +114,7 @@ class Iversia_FAQ_Installer
 
 				XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
 			}
-			if($version < 110)
-			{
-				// Add attachment handler
-				$db->query("
-					INSERT INTO xf_content_type_field
-						(content_type, field_name, field_value)
-					VALUES
-						('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question');
-				");
 
-				XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
-			}
 		}
 
 		unset($db);

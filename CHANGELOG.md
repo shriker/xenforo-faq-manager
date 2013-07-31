@@ -1,8 +1,13 @@
 DEV
 ---------------
-- [FIX] JavaScript paths are not longer relative to root folder
-- [NEW] Added wrappers for BBCode/HTML/etc.
+- [CHANGE] XenForo 1.2.0 or higher now required
+- [CHANGE] Redirect to newly added question after save
 - [CHANGE] Consolidated routes
+- [FIX] JavaScript paths are not longer relative to root folder
+- [NEW] Added edit/delete question links to FAQ index
+- [NEW] Added page numbers to titles
+- [NEW] Added wrappers for BBCode/HTML/etc.
+- [NEW] Added FAQ sidebar to category pages
 
 Version 1.0.1a
 ---------------
