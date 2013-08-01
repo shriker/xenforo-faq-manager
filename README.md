@@ -11,19 +11,24 @@ Features
 * BBCode supported answer fields
 * Permissions for managing questions, managing categories, and liking answers
 * Custom BBCode for linking to specific FAQ entries: `[faq=10][/faq]`
-* Two (2) included widgets for the [Widget Framework](http://xenforo.com/community/resources/bd-widget-framework.297/)
+* (Option) Select top navigation tab position
 * (Option) Multiple sort options (alphabetical, submit date, view count)
 * (Option) Show answers on the same page (slide down), always open (same page), or a new page
 * (Option) Questions per page
 * (Option) Social media share buttons enabled per question
 * RSS feed for most recently added questions
 * Uses XenForo phrases for easy language translations
+* Two (2) included widgets for the [Widget Framework](http://xenforo.com/community/resources/bd-widget-framework.297/)
 * And more!
 
 Demo
 ------------
 
 > [http://shadowlack.com/faq/](http://shadowlack.com/faq/)
+
+Requirements
+------------
+* [XenForo](http://xenforo.com/) 1.2.0
 
 Download
 ------------
@@ -45,13 +50,8 @@ Configuration
 
 Support
 ------------
-* [Common Questions](https://github.com/iversia/XenForo-FAQ-Manager/blob/master/HELP.md) - A list of common issues and installation questions.
+* [Common Questions](https://github.com/iversia/xenforo-faq-manager/blob/master/HELP.md) - A list of common issues and installation questions.
 * [FAQ Manager Discussion](http://xenforo.com/community/threads/iversia-faq-manager.44228/) - All questions, support, and feature requests should be made here.
-
-
-Requirements
-------------
-* [XenForo](http://xenforo.com/) 1.2.0
 
 Copyright / License
 ------------
