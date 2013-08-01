@@ -15,7 +15,7 @@ class Iversia_FAQ_Listener_TemplateHook
 	{
         $tabPosition = XenForo_Application::get('options')->faqNavTab;
 
-        if (isset($tabPosition) and $tabPosition['type'] != 'default') {
+        if (isset($tabPosition['type']) and $tabPosition['type'] != 'default') {
 
     		$visitor = XenForo_Visitor::getInstance();
 

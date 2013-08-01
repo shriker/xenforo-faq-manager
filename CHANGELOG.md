@@ -1,3 +1,4 @@
+- [FIX] Additional error checking
 - [FIX] Case insensitive file name
 - [NEW] Added Open Graph support for questions
 
