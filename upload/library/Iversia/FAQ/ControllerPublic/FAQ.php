@@ -34,6 +34,11 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             'page'          => $page,
             'faqPerPage'    => $faqPerPage,
             'faqTotal'      => $this->_getQuestionModel()->getTotal(),
+            // Sidebar
+            'popular'       => $this->_getQuestionModel()->getPopular(5),
+            'latest'       => $this->_getQuestionModel()->getLatest(5),
+            'faqStats'      => XenForo_Model::create('XenForo_Model_DataRegistry')->get('faqStats'),
+            // Permissions
             'canManageFAQ'  => $this->_getQuestionModel()->canManageFAQ(),
             'canManageCats' => $this->_getCategoryModel()->canManageCategories(),
         );
@@ -65,7 +70,11 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             'faqPerPage'         => $faqPerPage,
             'faqCatTotal'        => $this->_getQuestionModel()->getCategoryTotal($category_id),
             'faqcategory'        => $this->_getCategoryModel()->getById($category_id),
-            'categories'         => $this->_getCategoryModel()->getAll(),
+            // Sidebar
+            'popular'       => $this->_getQuestionModel()->getPopular(5),
+            'latest'       => $this->_getQuestionModel()->getLatest(5),
+            'faqStats'      => XenForo_Model::create('XenForo_Model_DataRegistry')->get('faqStats'),
+            // Permissions
             'canManageFAQ'  => $this->_getQuestionModel()->canManageFAQ(),
             'canManageCats' => $this->_getCategoryModel()->canManageCategories(),
         );
@@ -173,7 +182,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             'canLikeFAQ'    => $this->_getQuestionModel()->canLikeFAQ(),
         );
 
-        return $this->responseView('Iversia_FAQ_ViewPublic_Permalink', 'iversia_faq_question', $viewParams);
+        return $this->getWrapper('faq', 'x', $this->responseView('Iversia_FAQ_ViewPublic_Permalink', 'iversia_faq_question', $viewParams));
     }
 
     /**

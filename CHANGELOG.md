@@ -1,13 +1,15 @@
-DEV
+Version 2.0.0
 ---------------
 - [CHANGE] XenForo 1.2.0 or higher now required
 - [CHANGE] Redirect to newly added question after save
 - [CHANGE] Consolidated routes
+- [CHANGE] Updated templates to reflect XenForo 1.2.0
 - [FIX] JavaScript paths are not longer relative to root folder
 - [NEW] Added edit/delete question links to FAQ index
 - [NEW] Added page numbers to titles
 - [NEW] Added wrappers for BBCode/HTML/etc.
 - [NEW] Added FAQ sidebar to category pages
+- [NEW] Added top navigation tab link position option
 
 Version 1.0.1a
 ---------------

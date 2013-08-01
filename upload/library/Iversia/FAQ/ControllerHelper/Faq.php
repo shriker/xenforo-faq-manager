@@ -10,8 +10,8 @@ class Iversia_FAQ_ControllerHelper_Faq extends XenForo_ControllerHelper_Abstract
             'selectedKey' => "$selectedGroup/$selectedLink",
 
             'categories'    => $this->_controller->getModelFromCache('Iversia_FAQ_Model_Category')->getAll(),
-            'popular'       => $this->_controller->getModelFromCache('Iversia_FAQ_Model_Question')->getPopular(5),
-            'latest'        => $this->_controller->getModelFromCache('Iversia_FAQ_Model_Question')->getLatest(5),
+            //'popular'       => $this->_controller->getModelFromCache('Iversia_FAQ_Model_Question')->getPopular(5),
+            //'latest'        => $this->_controller->getModelFromCache('Iversia_FAQ_Model_Question')->getLatest(5),
 
             // Statistics
             'faqTotal'      => $this->_controller->getModelFromCache('Iversia_FAQ_Model_Question')->getTotal(),
