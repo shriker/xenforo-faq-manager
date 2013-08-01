@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="2.0.0" version_id="200" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="2.0.1" version_id="201" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -557,6 +557,14 @@ desc={xen:phrase descending_order}</edit_format_params>
 <xen:container var="$head.canonical">
     <link rel="canonical" href="{xen:link 'canonical:faq', $question}" />
 </xen:container>
+<xen:container var="$head.description">
+    <meta name="description" content="{xen:helper snippet, $question.answer, 155}" /></xen:container>
+
+<xen:container var="$head.openGraph"><xen:include template="open_graph_meta">
+    <xen:set var="$url">{xen:link 'canonical:faq', $question}</xen:set>
+    <xen:set var="$title">{$question.question}</xen:set>
+    <xen:set var="$ogType">article</xen:set>
+</xen:include></xen:container>
 
 <xen:require css="pagenode.css"/>
 <xen:require css="iversia_faq.css" />

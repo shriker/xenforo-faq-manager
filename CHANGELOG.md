@@ -1,3 +1,6 @@
+- [FIX] Case insensitive file name
+- [NEW] Added Open Graph support for questions
+
 Version 2.0.0
 ---------------
 - [CHANGE] XenForo 1.2.0 or higher now required
