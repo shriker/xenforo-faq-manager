@@ -2,6 +2,15 @@
 
 class Iversia_FAQ_Model_Question extends XenForo_Model
 {
+
+    public function getById($faq_id, $moderation = 0)
+    {
+        return $this->_getDb()->fetchRow('
+            SELECT f.*, c.title FROM xf_faq_question f
+            LEFT JOIN xf_faq_category c ON (c.category_id = f.category_id)
+            WHERE f.faq_id = ?', $faq_id);
+    }
+
     public function getAll($fetchOptions = array())
     {
         $limitOptions   = $this->prepareLimitFetchOptions($fetchOptions);
@@ -38,9 +47,9 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
     public function prepareUserOrderOptions(array &$fetchOptions, $defaultOrderSql = '')
     {
         $choices = array(
-            'question'      => 'question',
-            'view_count'    => 'view_count',
-            'submit_date'   => 'submit_date',
+            'question'      => 'sticky desc, question',
+            'view_count'    => 'sticky desd, view_count',
+            'submit_date'   => 'sticky desc, submit_date',
         );
 
         return $this->getOrderByClause($choices, $fetchOptions, $defaultOrderSql);
@@ -83,12 +92,9 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
         return $this->fetchAllKeyed("SELECT * FROM xf_faq_question ORDER BY view_count DESC LIMIT $limit", 'faq_id');
     }
 
-    public function getById($faq_id, $moderation = 0)
+    public function getSticky($limit, $moderation = 0)
     {
-        return $this->_getDb()->fetchRow('
-            SELECT f.*, c.title FROM xf_faq_question f
-            LEFT JOIN xf_faq_category c ON (c.category_id = f.category_id)
-            WHERE f.faq_id = ?', $faq_id);
+        return $this->fetchAllKeyed("SELECT * FROM xf_faq_question WHERE sticky = 1 ORDER BY view_count DESC LIMIT $limit", 'faq_id');
     }
 
     public function getQuestionsByIds(array $questionIds)
@@ -97,6 +103,18 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
             SELECT *
             FROM xf_faq_question
             WHERE faq_id IN ('.$this->_getDb()->quote($questionIds).')', 'faq_id');
+    }
+
+    public function getFaqIdsInRange($start, $limit)
+    {
+        $db = $this->_getDb();
+
+        return $db->fetchCol($db->limit('
+            SELECT faq_id
+            FROM xf_faq_question
+            WHERE faq_id > ?
+            ORDER BY faq_id
+        ', $limit), $start);
     }
 
     public function getByCategoryId($category_id)

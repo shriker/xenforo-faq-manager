@@ -6,5 +6,6 @@ class Iversia_FAQ_Listener_Widgets
     {
         $renderers[] = 'Iversia_FAQ_WidgetRenderer_MostPopular';
         $renderers[] = 'Iversia_FAQ_WidgetRenderer_LatestAnswers';
+        $renderers[] = 'Iversia_FAQ_WidgetRenderer_StickyAnswers';
     }
 }

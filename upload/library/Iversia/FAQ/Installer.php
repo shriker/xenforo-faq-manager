@@ -19,7 +19,7 @@ class Iversia_FAQ_Installer
     public static function install($existingAddOn, $addOnData)
     {
         if (XenForo_Application::$versionId < 1020031) {
-            throw new XenForo_Exception('This add-on requires XenForo 1.2.0 or higher.', true);
+            throw new XenForo_Exception('This add-on requires XenForo 1.2.x or higher.', true);
         }
 
         $version = is_array($existingAddOn) ? $existingAddOn['version_id'] : 0;
@@ -33,6 +33,7 @@ class Iversia_FAQ_Installer
                     `faq_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                     `category_id` int(10) unsigned NOT NULL DEFAULT '0',
                     `moderation` tinyint(1) unsigned NOT NULL DEFAULT '0',
+                    `sticky` tinyint(1) unsigned NOT NULL DEFAULT '0',
                     `user_id` int(10) unsigned NOT NULL DEFAULT '0',
                     `question` varchar(150) NOT NULL,
                     `answer` text NOT NULL,
@@ -41,12 +42,11 @@ class Iversia_FAQ_Installer
                     `view_count` int(10) unsigned NOT NULL DEFAULT '0',
                     `likes` int(10) unsigned NOT NULL,
                     `like_users` blob NOT NULL,
-                    FULLTEXT(answer),
                     PRIMARY KEY (`faq_id`),
                     KEY `user_id` (`user_id`),
                     KEY `category_id` (`category_id`),
                     KEY `view_count` (`view_count`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8"
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
             );
 
             $db->query(
@@ -55,7 +55,7 @@ class Iversia_FAQ_Installer
                     `title` varchar(120) NOT NULL,
                     `display_order` int(10) unsigned NOT NULL DEFAULT '1',
                     PRIMARY KEY (`category_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8"
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
             );
 
             // Insert default data
@@ -79,6 +79,7 @@ class Iversia_FAQ_Installer
                 "INSERT INTO xf_content_type_field
                     (content_type, field_name, field_value)
                 VALUES
+                    ('xf_faq_question', 'search_handler_class', 'Iversia_FAQ_Search_DataHandler_Question'),
                     ('xf_faq_question', 'alert_handler_class', 'Iversia_FAQ_AlertHandler_Question'),
                     ('xf_faq_question', 'like_handler_class', 'Iversia_FAQ_LikeHandler_Question');"
             );
@@ -107,9 +108,24 @@ class Iversia_FAQ_Installer
                         ('xf_faq_question', 'alert_handler_class', 'Iversia_FAQ_AlertHandler_Question'),
                         ('xf_faq_question', 'like_handler_class', 'Iversia_FAQ_LikeHandler_Question');"
                 );
-
-                XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
             }
+
+            if ($version < 204) {
+                // Drop fulltext index, change database engine to InnoDB
+                $db->query("ALTER TABLE xf_faq_question DROP INDEX answer, ENGINE=InnoDB;");
+                $db->query("ALTER TABLE xf_faq_category ENGINE=InnoDB;");
+
+                $db->query(
+                    "INSERT INTO xf_content_type_field
+                        (content_type, field_name, field_value)
+                    VALUES
+                        ('xf_faq_question', 'search_handler_class', 'Iversia_FAQ_Search_DataHandler_Question');"
+                );
+
+                $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `sticky` tinyint NOT NULL DEFAULT '0' AFTER `moderation`;");
+            }
+
+            XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
 
         }
 

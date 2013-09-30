@@ -1,3 +1,9 @@
+- [NEW] 100% Integrated with XenForo search
+- [NEW] Sticky questions
+- [FIX] Fixed online list errors when a question cannot be found
+
+Version 2.0.2
+---------------
 - [FIX] Additional error checking
 - [FIX] Case insensitive file name
 - [NEW] Added Open Graph support for questions

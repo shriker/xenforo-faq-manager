@@ -11,6 +11,10 @@ class Iversia_FAQ_ViewPublic_Permalink extends XenForo_ViewPublic_Base
             )
         );
 
-        $this->_params['question']['answer'] = new XenForo_BbCode_TextWrapper($this->_params['question']['answer'], $bbCodeParser);
+        if (isset($this->_params['question']['answer'])) {
+
+            $this->_params['question']['answer'] = new XenForo_BbCode_TextWrapper($this->_params['question']['answer'], $bbCodeParser);
+
+        }
     }
 }

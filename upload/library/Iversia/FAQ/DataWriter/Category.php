@@ -15,8 +15,7 @@ class Iversia_FAQ_DataWriter_Category extends XenForo_DataWriter
 
 	protected function _getExistingData($data)
 	{
-		if ( ! $id = $this->_getExistingPrimaryKey($data, 'category_id'))
-		{
+		if (! $id = $this->_getExistingPrimaryKey($data, 'category_id')) {
 			return false;
 		}
 

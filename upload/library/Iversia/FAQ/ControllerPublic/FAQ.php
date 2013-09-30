@@ -20,7 +20,6 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
         }
 
         $faqPerPage     = XenForo_Application::get('options')->faqPerPage;
-        $faqSortOrder   = XenForo_Application::get('options')->faqSortOrder;
 
         $viewParams = array(
             'faq'=> $this->_getQuestionModel()->getAll(
@@ -305,12 +304,11 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
         $input = array();
         $input['question']      = $this->_input->filterSingle('question', XenForo_Input::STRING);
         $input['category_id']   = $this->_input->filterSingle('category_id', XenForo_Input::UINT);
+        $input['sticky']   = $this->_input->filterSingle('sticky', XenForo_Input::UINT);
         $input['answer']        = $this->getHelper('Editor')->getMessageText('message', $this->_input);
         $input['answer']        = XenForo_Helper_String::autoLinkBbCode($input['answer']);
 
-
-        $answerDate = '';
-
+        // New question
         if ($faq_id) {
 
             $dw = XenForo_DataWriter::create('Iversia_FAQ_DataWriter_Question');
@@ -319,6 +317,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
                 array(
                     'category_id'       => $input['category_id'],
                     'moderation'        => 0,
+                    'sticky'            => $input['sticky'],
                     'question'          => $input['question'],
                     'answer'            => $input['answer'],
                     'answer_date'       => XenForo_Application::$time, // Last updated
@@ -330,12 +329,14 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             $saveAction = new XenForo_Phrase('iversia_faq_question_edited');
 
         } else {
+            // Updating existing question
             $dw = XenForo_DataWriter::create('Iversia_FAQ_DataWriter_Question');
             $dw->bulkSet(
                 array(
                     'user_id'           => $visitor['user_id'],
                     'category_id'       => $input['category_id'],
                     'moderation'        => 0,
+                    'sticky'            => $input['sticky'],
                     'question'          => $input['question'],
                     'answer'            => $input['answer'],
                 )
@@ -396,9 +397,11 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             if (!empty($activity['params']['faq_id'])) {
                 $faq_id     = (int) $activity['params']['faq_id'];
                 $questions  = XenForo_Model::create('XenForo_Model_DataRegistry')->get('faqCache');
-                $question   = $questions[$faq_id];
+                if (isset($questions[$faq_id])) {
+                    $question   = $questions[$faq_id];
+                }
 
-                if ($question) {
+                if (isset($question)) {
                     $faqLinkText = new XenForo_Phrase('iversia_faq') . ' #'. $faq_id .': ' . $question;
                     $faqLink = XenForo_Link::buildPublicLink('full:faq', array('faq_id' => $faq_id, 'question' => $question));
                 }
