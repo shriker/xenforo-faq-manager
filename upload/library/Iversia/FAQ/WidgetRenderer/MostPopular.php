@@ -5,7 +5,7 @@ class Iversia_FAQ_WidgetRenderer_MostPopular extends WidgetFramework_WidgetRende
     protected function _getConfiguration()
     {
         return array(
-            'name'           => '[Iversia] FAQ Manager - Most Popular',
+            'name'           => new XenForo_Phrase('wf_faq_most_popular'),
             'options'        => array(
                 'limit'         => XenForo_Input::UINT
             ),

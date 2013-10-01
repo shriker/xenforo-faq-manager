@@ -55,6 +55,12 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 
         $faqPerPage = XenForo_Application::get('options')->faqPerPage;
 
+        $category = $this->_getCategoryModel()->getById($category_id);
+
+        if (!$category) {
+            throw $this->responseException($this->responseError(new XenForo_Phrase('requested_page_not_found'), 404));
+        }
+
         $viewParams = array(
             'faq' => $this->_getQuestionModel()->getAllCategory(
                 $category_id,
@@ -68,7 +74,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             'page'               => $page,
             'faqPerPage'         => $faqPerPage,
             'faqCatTotal'        => $this->_getQuestionModel()->getCategoryTotal($category_id),
-            'faqcategory'        => $this->_getCategoryModel()->getById($category_id),
+            'faqcategory'        => $category,
             // Sidebar
             'popular'       => $this->_getQuestionModel()->getPopular(5),
             'latest'       => $this->_getQuestionModel()->getLatest(5),
@@ -167,6 +173,10 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 
         $question = $this->_getQuestionModel()->getById($faq_id);
 
+        if (!$question) {
+            throw $this->responseException($this->responseError(new XenForo_Phrase('requested_page_not_found'), 404));
+        }
+
         $this->_getQuestionModel()->logQuestionView($faq_id);
 
         // Likes
@@ -198,6 +208,10 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 
         $question   = $this->_getQuestionModel()->getById($faq_id);
         $likeModel  = $this->_getLikeModel();
+
+        if (!$question) {
+            throw $this->responseException($this->responseError(new XenForo_Phrase('requested_page_not_found'), 404));
+        }
 
         // Users cannot like their own FAQ entries
         if ($question['user_id'] == $visitor['user_id']) {

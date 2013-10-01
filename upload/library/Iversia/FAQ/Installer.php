@@ -110,11 +110,7 @@ class Iversia_FAQ_Installer
                 );
             }
 
-            if ($version < 204) {
-                // Drop fulltext index, change database engine to InnoDB
-                $db->query("ALTER TABLE xf_faq_question DROP INDEX answer, ENGINE=InnoDB;");
-                $db->query("ALTER TABLE xf_faq_category ENGINE=InnoDB;");
-
+            if ($version < 210) {
                 $db->query(
                     "INSERT INTO xf_content_type_field
                         (content_type, field_name, field_value)

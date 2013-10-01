@@ -2,6 +2,11 @@
 
 class Iversia_FAQ_Listener_Extend
 {
+    public static function fileHealthCheck(XenForo_ControllerAdmin_Abstract $controller, array &$hashes)
+    {
+        $hashes += Iversia_FAQ_FileSums::getHashes();
+    }
+
     public static function load_class($class, array &$extend)
     {
         static $classes = array(
@@ -23,7 +28,6 @@ class Iversia_FAQ_Listener_Extend
     {
         return $matches[0] .
         '<xen:if is="{$controllerName} == \'Iversia_FAQ_ControllerPublic_FAQ\'">
-        <span id="iversiaFAQ" class="muted">FAQ Manager &copy;2013 <a href="http://www.iversia.com" title="Iversia - Web Developer and Illustrator" class="concealed">Iversia</a> from <a href="http://shadowlack.com" title="Shadowlack, a Science Fantasy Play-by-Post RPG" class="concealed">Shadowlack</a>.</span>
-        </xen:if>';
+        <span id="iversiaFAQ" class="muted">FAQ Manager &copy;2013 <a href="http://www.iversia.com" title="Iversia - Web Developer and Illustrator" class="concealed">Iversia</a> from <a href="http://shadowlack.com" title="Shadowlack, a Science Fantasy Play-by-Post RPG" class="concealed">Shadowlack</a>.</span></xen:if>';
     }
 }

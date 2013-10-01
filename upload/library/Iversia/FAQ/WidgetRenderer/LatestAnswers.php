@@ -5,7 +5,7 @@ class Iversia_FAQ_WidgetRenderer_LatestAnswers extends WidgetFramework_WidgetRen
     protected function _getConfiguration()
     {
         return array(
-            'name'           => '[Iversia] FAQ Manager - Latest Answers',
+            'name'           => new XenForo_Phrase('wf_faq_latest_answers'),
             'options'        => array(
                 'limit'         => XenForo_Input::UINT
             ),

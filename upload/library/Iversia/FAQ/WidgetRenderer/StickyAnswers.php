@@ -5,7 +5,7 @@ class Iversia_FAQ_WidgetRenderer_StickyAnswers extends WidgetFramework_WidgetRen
     protected function _getConfiguration()
     {
         return array(
-            'name'           => 'FAQ Manager - Sticky',
+            'name'           => new XenForo_Phrase('wf_faq_sticky'),
             'options'        => array(
                 'limit'         => XenForo_Input::UINT
             ),
@@ -30,7 +30,7 @@ class Iversia_FAQ_WidgetRenderer_StickyAnswers extends WidgetFramework_WidgetRen
 
     protected function _getRenderTemplate(array $widget, $positionCode, array $params)
     {
-        return 'faq_widget_sticky';
+        return 'faq_widget_most_popular';
     }
 
     protected function _render(array $widget, $positionCode, array $params, XenForo_Template_Abstract $template)
@@ -38,7 +38,7 @@ class Iversia_FAQ_WidgetRenderer_StickyAnswers extends WidgetFramework_WidgetRen
         $questions        = array();
         $core             = WidgetFramework_Core::getInstance();
         $questionModel    = $core->getModelFromCache('Iversia_FAQ_Model_Question');
-        $questions        = $questionModel->getPopular($widget['options']['limit']);
+        $questions        = $questionModel->getSticky($widget['options']['limit']);
 
         $template->setParam('questions', $questions);
 

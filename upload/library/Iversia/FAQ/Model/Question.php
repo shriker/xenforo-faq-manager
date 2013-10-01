@@ -92,7 +92,7 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
         return $this->fetchAllKeyed("SELECT * FROM xf_faq_question ORDER BY view_count DESC LIMIT $limit", 'faq_id');
     }
 
-    public function getSticky($limit, $moderation = 0)
+    public function getSticky($limit, $category_id = null)
     {
         return $this->fetchAllKeyed("SELECT * FROM xf_faq_question WHERE sticky = 1 ORDER BY view_count DESC LIMIT $limit", 'faq_id');
     }

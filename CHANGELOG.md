@@ -1,5 +1,7 @@
 - [NEW] 100% Integrated with XenForo search
 - [NEW] Sticky questions
+- [NEW] Sticky Widget for [bd] Widget Framework
+- [NEW] Added file health checking
 - [FIX] Fixed online list errors when a question cannot be found
 
 Version 2.0.2
