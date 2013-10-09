@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="2.0.2" version_id="202" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="2.2.0" version_id="220" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -28,6 +28,7 @@
   <admin_template_modifications/>
   <code_events/>
   <code_event_listeners>
+    <listener event_id="file_health_check" execute_order="10" callback_class="Iversia_FAQ_Listener_Extend" callback_method="fileHealthCheck" active="1" hint="" description="FAQ file health check."/>
     <listener event_id="load_class_bb_code" execute_order="10" callback_class="Iversia_FAQ_Listener_BbCode" callback_method="listen" active="1" hint="" description="Adds FAQ BBCode for questions"/>
     <listener event_id="navigation_tabs" execute_order="10" callback_class="Iversia_FAQ_Listener_TemplateHook" callback_method="navTabs" active="1" hint="" description="Adds FAQ top NavBar tab"/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="Iversia_FAQ_Listener_Widgets" callback_method="widget_framework_ready" active="1" hint="" description="Adds widgets for [bd] Widget Framework."/>
@@ -50,9 +51,9 @@ step=1</edit_format_params>
     </option>
     <option option_id="faqClickAction" edit_format="radio" data_type="string" can_backup="1">
       <default_value>same_page</default_value>
-      <edit_format_params>same_page=Slide Open (Same Page)
-new_page=Click Through (New Page)
-all_open=All Questions Open (Same Page)</edit_format_params>
+      <edit_format_params>same_page={xen:phrase faq_option_slide_open}
+new_page={xen:phrase faq_option_click_through}
+all_open={xen:phrase faq_option_all_open}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="faqOptions" display_order="60"/>
     </option>
@@ -126,6 +127,9 @@ desc={xen:phrase descending_order}</edit_format_params>
     <phrase title="faq_display_home" version_id="200" version_string="2.0.0"><![CDATA[Display Home]]></phrase>
     <phrase title="faq_display_middle" version_id="200" version_string="2.0.0"><![CDATA[Display Middle]]></phrase>
     <phrase title="faq_do_not_display" version_id="200" version_string="2.0.0"><![CDATA[Do Not Display]]></phrase>
+    <phrase title="faq_option_all_open" version_id="202" version_string="2.0.2"><![CDATA[All Questions Open (Same Page)]]></phrase>
+    <phrase title="faq_option_click_through" version_id="202" version_string="2.0.2"><![CDATA[Click Through (New Page)]]></phrase>
+    <phrase title="faq_option_slide_open" version_id="202" version_string="2.0.2"><![CDATA[Slide Open (Same Page)]]></phrase>
     <phrase title="iversia_faq" version_id="100" version_string="1.0.0"><![CDATA[FAQ]]></phrase>
     <phrase title="iversia_faq_add_category" version_id="90" version_string="1.0.0"><![CDATA[Add Category]]></phrase>
     <phrase title="iversia_faq_add_to" version_id="100" version_string="1.0.0"><![CDATA[Add to FAQ]]></phrase>
@@ -189,6 +193,10 @@ desc={xen:phrase descending_order}</edit_format_params>
     <phrase title="permission_FAQ_Manager_Permissions_manageFAQCategories" version_id="90" version_string="1.0.0"><![CDATA[Can manage FAQ categories]]></phrase>
     <phrase title="permission_group_FAQ_Manager_Permissions" version_id="100" version_string="1.0.0"><![CDATA[FAQ Manager Permissions]]></phrase>
     <phrase title="permission_interface_faqPermissions" version_id="100" version_string="1.0.0"><![CDATA[FAQ Manager Permissions]]></phrase>
+    <phrase title="search_faq" version_id="202" version_string="2.0.2"><![CDATA[Search FAQ]]></phrase>
+    <phrase title="wf_faq_latest_answers" version_id="202" version_string="2.0.2"><![CDATA[FAQ: Latest Answers]]></phrase>
+    <phrase title="wf_faq_most_popular" version_id="202" version_string="2.0.2"><![CDATA[FAQ: Most Popular]]></phrase>
+    <phrase title="wf_faq_sticky" version_id="202" version_string="2.0.2"><![CDATA[FAQ: Sticky]]></phrase>
     <phrase title="x_liked_your_faq_answer_y" version_id="101" version_string="1.0.1"><![CDATA[{name} liked your FAQ answer to: {title}]]></phrase>
     <phrase title="x_liked_ys_faq_answer_z" version_id="101" version_string="1.0.1"><![CDATA[{name} liked <a {posterParams}>{poster}'s answer</a> to: {title}]]></phrase>
   </phrases>
@@ -230,8 +238,9 @@ desc={xen:phrase descending_order}</edit_format_params>
         </ul>
     </div>
 </xen:if>]]></template>
-    <template title="faq_wrapper" version_id="200" version_string="2.0.0"><![CDATA[<xen:require css="iversia_faq.css" />
+    <template title="faq_wrapper" version_id="210" version_string="2.1.0"><![CDATA[<xen:require css="iversia_faq.css" />
 <xen:require css="help_wrapper.css" />
+<xen:require css="discussion_list.css" />
 <xen:require js="js/iversia/faq/jquery.faq.js" />
 
 <xen:if is="{$canManageFAQ}">
@@ -240,29 +249,35 @@ desc={xen:phrase descending_order}</edit_format_params>
     </xen:topctrl>
 </xen:if>
 
+<xen:hook name="faq_wrapper_header" />
 <div class="container">
     <div class="navigationSideBar ToggleTriggerAnchor">
         <xen:include template="iversia_faq_categories" />
+        <xen:hook name="faq_after_categories" />
     </div>
     
-    <div class="mainContentBlock section sectionMain">
+    <div class="mainContentBlock discussionList section sectionMain">
     
         <div class="baseHtml faqContent">
-               
+
             <xen:hook name="faq_wrapper_content">{xen:raw $_subView}</xen:hook>
       
         </div>
     </div>
 </div>
-<xen:include template="iversia_faq_footer" />]]></template>
-    <template title="iversia_faq.css" version_id="200" version_string="2.0.0"><![CDATA[#pageNodeContent.faqMain {
-	padding-top:0
+<xen:hook name="faq_wrapper_footer" />]]></template>
+    <template title="iversia_faq.css" version_id="220" version_string="2.2.0"><![CDATA[#pageNodeContent.faqMain {
+	padding-top: 0;
 }
 .faqContent {
 	position:relative;
 }
+.faqListItem {
+	display:block;
+	width:auto;
+}
 .faqItem {	
-	position:relative
+	position:relative;
 }
 .faqItem h3 {
 	cursor: pointer
@@ -272,8 +287,13 @@ desc={xen:phrase descending_order}</edit_format_params>
 	display:block;
 	text-align:right;
 }
-#iversiaFAQ {margin-top:10px;font-size:11px;text-align:center}]]></template>
-    <template title="iversia_faq_alert_preferences" version_id="101" version_string="1.0.1"><![CDATA[<h3 class="sectionHeader">{xen:phrase iversia_faq}</h3>
+#iversiaFAQ {
+	text-align:center;
+	font-size: 11px;
+	margin: 16px auto;
+}]]></template>
+    <template title="iversia_faq_alert_preferences" version_id="210" version_string="2.1.0"><![CDATA[<xen:if is="{$visitor.permissions.FAQ_Manager_Permissions.canLikeFAQ} OR {$visitor.permissions.FAQ_Manager_Permissions.manageFAQ}">
+<h3 class="sectionHeader">{xen:phrase iversia_faq}</h3>
 <dl class="ctrlUnit">
 	<dt>{xen:phrase receive_alert_when_someone}...</dt>
 	<dd>
@@ -284,24 +304,27 @@ desc={xen:phrase descending_order}</edit_format_params>
 			</li>
 		</ul>
 	</dd>
-</dl>]]></template>
+</dl>
+</xen:if>]]></template>
     <template title="iversia_faq_bbcode" version_id="200" version_string="2.0.0"><![CDATA[<div class="bbCodeBlock bbCodeQuote bbCodeFAQ">
     <aside>
     <blockquote class="quoteContainer faqContainer"><b>{xen:phrase iversia_faq} #{$faq_id}:</b> <a href="{$faqLink}">{$question}</a></blockquote>
     </aside>
 </div>]]></template>
-    <template title="iversia_faq_categories" version_id="101" version_string="1.0.1"><![CDATA[<h4 class="heading ToggleTrigger" data-target="> ul">{xen:phrase node_type_Category} <span></span></h4>
+    <template title="iversia_faq_categories" version_id="210" version_string="2.1.0"><![CDATA[<h4 class="heading ToggleTrigger" data-target="> ul">{xen:phrase node_type_Category} <span></span></h4>
 <ul data-toggle-class="menuVisible">
     <li class="section">
         <ul>
+            <xen:hook name="faq_categories_header" />
             <li><a href="{xen:link full:faq}" class="{xen:if "{$selectedLink} == 'index'", 'secondaryContent', 'primaryContent'}">{xen:phrase iversia_faq_all_questions}</a></li>
             <xen:foreach loop="$categories" value="$category" i="$i">
                 <li><a href="{xen:link full:faq/category, $category}" class="{xen:if "{$selectedLink} == {$category.category_id}", 'secondaryContent', 'primaryContent'}">{xen:helper wordtrim, $category.title, 25}</a></li>
             </xen:foreach>
+            <xen:hook name="faq_categories_footer" />
         </ul>
     </li>
 </ul>]]></template>
-    <template title="iversia_faq_category" version_id="200" version_string="2.0.0"><![CDATA[<xen:title>{$faqcategory.title}{$thread.title}{xen:helper pagenumber, $page}</xen:title>
+    <template title="iversia_faq_category" version_id="202" version_string="2.0.2"><![CDATA[<xen:title>{$faqcategory.title}{$thread.title}{xen:helper pagenumber, $page}</xen:title>
 <xen:h1>{$faqcategory.title}</xen:h1>
 
 <xen:navigation>
@@ -328,12 +351,13 @@ desc={xen:phrase descending_order}</edit_format_params>
 </div>
 
 <xen:include template="iversia_faq_questions"/>
+
 <xen:include template="iversia_faq_sidebar" />
 
 <div class="pageNavLinkGroup">
     <xen:pagenav link="faq/category" linkdata="{$faqcategory}" page="{$page}" perpage="{$faqPerPage}" total="{$faqCatTotal}" />
 </div>]]></template>
-    <template title="iversia_faq_create" version_id="100" version_string="1.0.0"><![CDATA[<xen:title>{xen:phrase iversia_faq_add_to}</xen:title>
+    <template title="iversia_faq_create" version_id="210" version_string="2.1.0"><![CDATA[<xen:title>{xen:phrase iversia_faq_add_to}</xen:title>
 
 <xen:navigation>
 	<xen:breadcrumb href="{xen:link full:faq/create}">{xen:phrase iversia_faq_add_to}</xen:breadcrumb>
@@ -364,6 +388,19 @@ desc={xen:phrase descending_order}</edit_format_params>
 				</dd>
 			</dl>
 			
+			<dl class="ctrlUnit">
+				<dt><label for="display_order">{xen:phrase display_order}:</label></dt>
+				<dd><input type="text" name="display_order" class="textCtrl" value="0"/></dd>
+			</dl>
+			
+			<dl class="ctrlUnit">
+				<dt></dt>
+				<dd>
+					<label for="ctrl_sticky"><input type="checkbox" name="sticky" value="1" id="ctrl_sticky" /> {xen:phrase sticky}</label>
+					<input type="hidden" name="_set[sticky]" value="1" />
+				</dd>
+			</dl>
+			
 			<h3 class="sectionHeader">{xen:phrase iversia_faq_answer}:</h3>
 			
 			<dl class="ctrlUnit fullWidth">
@@ -381,10 +418,8 @@ desc={xen:phrase descending_order}</edit_format_params>
 		</fieldset>
 		
 	</form>
-</div>
-<xen:include template="iversia_faq_footer" />
-]]></template>
-    <template title="iversia_faq_create_category" version_id="101" version_string="1.0.1"><![CDATA[<xen:title>{xen:phrase iversia_faq_add_category}</xen:title>
+</div>]]></template>
+    <template title="iversia_faq_create_category" version_id="202" version_string="2.0.2"><![CDATA[<xen:title>{xen:phrase iversia_faq_add_category}</xen:title>
 
 <xen:navigation>
 	<xen:breadcrumb href="{xen:link full:faq/category-create}">{xen:phrase iversia_faq_add_category}</xen:breadcrumb>
@@ -418,9 +453,8 @@ desc={xen:phrase descending_order}</edit_format_params>
 		</fieldset>
 		
 	</form>
-</div>
-<xen:include template="iversia_faq_footer" />]]></template>
-    <template title="iversia_faq_edit" version_id="100" version_string="1.0.0"><![CDATA[<xen:title>{xen:phrase iversia_faq_edit}</xen:title>
+</div>]]></template>
+    <template title="iversia_faq_edit" version_id="210" version_string="2.1.0"><![CDATA[<xen:title>{xen:phrase iversia_faq_edit}</xen:title>
 
 <xen:navigation>
 	<xen:breadcrumb href="{xen:link full:faq/edit, $question}">{xen:phrase iversia_faq_edit}</xen:breadcrumb>
@@ -446,10 +480,23 @@ desc={xen:phrase descending_order}</edit_format_params>
 						<xen:foreach loop="$categories" value="$category">
 							<option value="{$category.category_id}" {xen:selected '{$category.category_id} == {$question.category_id}'}>{$category.title}</option>
 						</xen:foreach>
-					</select>
+					</select> 
 				</dd>
 			</dl>
 			
+			<dl class="ctrlUnit">
+				<dt><label for="display_order">{xen:phrase display_order}:</label></dt>
+				<dd><input type="text" name="display_order" class="textCtrl" value="{$question.display_order}"/></dd>
+			</dl>
+			
+			<dl class="ctrlUnit">
+				<dt></dt>
+				<dd>
+					<label for="ctrl_sticky"><input type="checkbox" name="sticky" value="1" id="ctrl_sticky" {xen:checked {$question.sticky}} /> {xen:phrase sticky}</label>
+					<input type="hidden" name="_set[sticky]" value="1" />
+				</dd>
+			</dl>
+
 			<h3 class="sectionHeader">{xen:phrase iversia_faq_answer}:</h3>
 			
 			<dl class="ctrlUnit fullWidth">
@@ -467,9 +514,8 @@ desc={xen:phrase descending_order}</edit_format_params>
 		</fieldset>
 		
 	</form>
-</div>
-<xen:include template="iversia_faq_footer" />]]></template>
-    <template title="iversia_faq_edit_category" version_id="101" version_string="1.0.1"><![CDATA[<xen:title>{xen:phrase iversia_faq_edit_category}</xen:title>
+</div>]]></template>
+    <template title="iversia_faq_edit_category" version_id="202" version_string="2.0.2"><![CDATA[<xen:title>{xen:phrase iversia_faq_edit_category}</xen:title>
 
 <xen:navigation>
 	<xen:breadcrumb href="{xen:link full:faq/category-create, $faqcategory}">{xen:phrase iversia_faq_edit_category}</xen:breadcrumb>
@@ -503,9 +549,7 @@ desc={xen:phrase descending_order}</edit_format_params>
 		</fieldset>
 		
 	</form>
-</div>
-<xen:include template="iversia_faq_footer" />]]></template>
-    <template title="iversia_faq_footer" version_id="101" version_string="1.0.1"><![CDATA[<div id="iversiaFAQ" class="muted">FAQ Manager &copy;2013 <a href="http://www.iversia.com" title="Iversia - Web Developer and Illustrator">Iversia</a> from <a href="http://shadowlack.com" title="Shadowlack, a Science Fantasy Play-by-Post RPG">Shadowlack</a>.</div>]]></template>
+</div>]]></template>
     <template title="iversia_faq_index" version_id="200" version_string="2.0.0"><![CDATA[<xen:title>{xen:phrase iversia_faq_index_title}{$thread.title}{xen:helper pagenumber, $page}</xen:title>
 <xen:h1>{xen:phrase iversia_faq_index_title}</xen:h1>
 <xen:include template="iversia_faq_sidebar" />
@@ -652,19 +696,24 @@ desc={xen:phrase descending_order}</edit_format_params>
 
     </div>
 </div>]]></template>
-    <template title="iversia_faq_questions" version_id="101" version_string="1.0.1"><![CDATA[<div class="section sectionMain faqList">
+    <template title="iversia_faq_questions" version_id="210" version_string="2.1.0"><![CDATA[<div class="section sectionMain">
     <xen:if hascontent="true">
         <xen:contentcheck>
             <xen:foreach loop="$faq" value="$question" i="$i">
                 
-                <div class="secondaryContent <xen:if is="{$xenOptions.faqClickAction} == 'same_page'">faqSlide</xen:if>">
+                <div class="discussionListItem faqListItem secondaryContent <xen:if is="{$question.sticky} == 1">sticky </xen:if><xen:if is="{$xenOptions.faqClickAction} == 'same_page'">faqSlide</xen:if>">
+                    
+                    <xen:if is="{$question.sticky} == 1">
+                    <div class="iconKey"><span class="sticky" title="{xen:phrase sticky}">{xen:phrase sticky}</span></div>
+                    </xen:if>
+                    
                     <xen:if is="{$xenOptions.faqClickAction} == 'new_page'">
-                        <h3><a href="{xen:link full:faq, $question}">{$question.question}</a></h3>
+                        <h3 class="title"><a href="{xen:link full:faq, $question}">{$question.question}</a></h3>
                         <xen:else />
                         
                         <div class="faqItem">
                             
-                            <h3><a href="{xen:link full:faq, $question}">{$question.question}</a></h3>
+                            <h3 class="title"><a href="{xen:link full:faq, $question}">{$question.question}</a></h3>
                             <div class="faqAnswer">
 
                                 <div class="baseHtml">
@@ -834,12 +883,73 @@ desc={xen:phrase descending_order}</edit_format_params>
 </h3>
 
 <p class="snippet">{xen:helper snippet, $content.message, 100, {xen:array 'stripQuote=1'}}</p>]]></template>
+    <template title="search_form_question" version_id="202" version_string="2.0.2"><![CDATA[<xen:title>{xen:phrase search_faq}</xen:title>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:link full:search}">{xen:phrase search}</xen:breadcrumb>
+</xen:navigation>
+
+<form action="{xen:link 'search/search'}" method="post" class="xenForm AutoValidator" data-optInOut="optIn" data-redirect="true">
+
+	<ul class="tabs">
+		<li><a href="{xen:link search}">{xen:phrase search_everything}</a></li>
+		<li><a href="{xen:link search, '', 'type=post'}">{xen:phrase search_threads_and_posts}</a></li>
+		<li class="active"><a href="{xen:link search, '', 'type=xf_faq_question'}">{xen:phrase search_faq}</a></li>
+	</ul>
+	
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_keywords">{xen:phrase keywords}:</label></dt>
+		<dd>
+			<ul>
+				<li>
+					<input type="search" name="keywords" value="{$search.keywords}" results="0" class="textCtrl" id="ctrl_keywords" />
+				</li>
+			</ul>
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_date">{xen:phrase newer_than}:</label></dt>
+		<dd>
+			<input type="date" name="date" value="{$search.date}" class="textCtrl" id="ctrl_date" />
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd><input type="submit" value="{xen:phrase search}" accesskey="s" class="button primary" /></dd>
+	</dl>
+
+	<input type="hidden" name="type" value="xf_faq_question" />
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>]]></template>
+    <template title="xf_faq_question_search_result" version_id="202" version_string="2.0.2"><![CDATA[<li id="question-{$question.question_id}" class="searchResult thread primaryContent">
+	<div class="listBlock posterAvatar"></div>
+	<div class="listBlock main">
+		<div class="titleText">
+			<span class="contentType">{xen:phrase iversia_faq}</span>
+			<h3 class="title">{xen:phrase iversia_faq}: <a href="{xen:link faq, $question}">{xen:helper highlight, $question.question, $search.search_query, 'highlight'}</a></h3>
+		</div>
+
+		<blockquote class="snippet">
+			<a href="{xen:link faq, $question}">{xen:helper snippet, $question.answer, 150, {xen:array 'term={$search.search_query}', 'emClass=highlight', 'stripQuotes=1'}}</a>
+		</blockquote>
+
+		<div class="meta">
+			<xen:datetime time="$question.answer_date" />
+		</div>
+	</div>
+</li>]]></template>
   </templates>
   <public_template_modifications>
     <modification template="account_alert_preferences" modification_key="faq_account_alert_preferences" description="Adds FAQ alert preferences to account." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:hook name="account_alerts_extra" />]]></find>
       <replace><![CDATA[<xen:hook name="account_alerts_extra" />
 <xen:include template="iversia_faq_alert_preferences"/>]]></replace>
+    </modification>
+    <modification template="faq_wrapper" modification_key="faq_copyright" description="Add FAQ copyright to footer links." execution_order="10" enabled="1" action="callback">
+      <find><![CDATA[/<xen:hook name="faq_wrapper_footer" \/>/]]></find>
+      <replace><![CDATA[Iversia_FAQ_Listener_Extend::credits]]></replace>
     </modification>
     <modification template="footer" modification_key="faq_footer" description="Adds FAQ link to footer." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<li><a href="{xen:link help}">{xen:phrase help}</a></li>]]></find>
@@ -865,6 +975,11 @@ desc={xen:phrase descending_order}</edit_format_params>
       <find><![CDATA[<li><a href="{xen:link help/smilies}" class="{xen:if "{$selected} == 'smilies'", 'secondaryContent', 'primaryContent'}">{xen:phrase smilies}</a></li>]]></find>
       <replace><![CDATA[<li><a href="{xen:link faq}" class="primaryContent">{xen:phrase iversia_faq}</a></li>
 <li><a href="{xen:link help/smilies}" class="{xen:if "{$selected} == 'smilies'", 'secondaryContent', 'primaryContent'}">{xen:phrase smilies}</a></li>]]></replace>
+    </modification>
+    <modification template="search_form_tabs" modification_key="faq_search_form_tabs" description="Add FAQ to search form tab." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[</xen:hook>]]></find>
+      <replace><![CDATA[<li{xen:if "{$searchType} == 'xf_faq_question'", ' class="active"'}><a href="{xen:link search, '', 'type=xf_faq_question'}">{xen:phrase search_faq}</a></li>
+$0]]></replace>
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>

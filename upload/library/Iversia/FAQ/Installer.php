@@ -120,6 +120,9 @@ class Iversia_FAQ_Installer
                 );
 
                 $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `sticky` tinyint NOT NULL DEFAULT '0' AFTER `moderation`;");
+            }
+
+            if ($version < 220) {
                 $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `display_order` tinyint NOT NULL DEFAULT '0' AFTER `moderation`;");
             }
 

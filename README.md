@@ -7,6 +7,8 @@ Features
 ------------
 * Full FAQ with adding, editing and deleting
 * Question categories
+* 100% integrated with XenForo search
+* Sticky questions
 * Site members can Like answers
 * BBCode supported answer fields
 * Permissions for managing questions, managing categories, and liking answers
@@ -18,17 +20,17 @@ Features
 * (Option) Social media share buttons enabled per question
 * RSS feed for most recently added questions
 * Uses XenForo phrases for easy language translations
-* Two (2) included widgets for the [Widget Framework](http://xenforo.com/community/resources/bd-widget-framework.297/)
+* Three (3) included widgets for the [Widget Framework](http://xenforo.com/community/resources/bd-widget-framework.297/)
 * And more!
 
 Demo
 ------------
 
-> [http://shadowlack.com/faq/](http://shadowlack.com/faq/)
+> [http://www.rpgfix.com/faq/](http://www.rpgfix.com/faq/)
 
 Requirements
 ------------
-* [XenForo](http://xenforo.com/) 1.2.0
+* [XenForo](http://xenforo.com/) 1.2+
 
 Download
 ------------

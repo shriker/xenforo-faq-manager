@@ -41,6 +41,5 @@ class Iversia_FAQ_Listener_TemplateHook
     			'faqPerm' 		=> $faqLinks
     		);
         }
-
 	}
 }

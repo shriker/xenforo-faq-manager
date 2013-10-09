@@ -1,3 +1,5 @@
+Version 2.2.0
+---------------
 - [NEW] 100% Integrated with XenForo search
 - [NEW] Sticky questions
 - [NEW] Sticky Widget for [bd] Widget Framework

@@ -23,3 +23,7 @@ FAQ Statistics are updated once a day via a cron. You may run this manually by g
 ##The "Slide Open" option is not working.
 
 Please make sure that you have uploaded the included JavaScript file into your forum root (`js/faq/iversia/faq/jquery.faq.js`), and that you have JavaScript enabled in your web browser.
+
+##Questions are not showing up in search results!##
+
+Please make sure you have version 2.2.0+ installed, and then rebuild your search index. Go to: `Tools -> Rebuild Caches -> Rebuild Search Index`. Select `xf_faq_question` and then rebuild your cache.
