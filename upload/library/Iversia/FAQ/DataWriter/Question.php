@@ -11,6 +11,7 @@ class Iversia_FAQ_DataWriter_Question extends XenForo_DataWriter
 
                 'moderation'    => array('type' => self::TYPE_UINT, 'required' => true),
                 'sticky'        => array('type' => self::TYPE_UINT, 'required' => false, 'default' => 0),
+                'display_order'    => array('type' => self::TYPE_UINT, 'required' => true, 'default' => 0),
 
                 'user_id'       => array('type' => self::TYPE_UINT,     'required' => true),
 

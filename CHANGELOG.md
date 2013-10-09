@@ -1,8 +1,11 @@
 - [NEW] 100% Integrated with XenForo search
 - [NEW] Sticky questions
 - [NEW] Sticky Widget for [bd] Widget Framework
+- [NEW] Added display ordering for questions
 - [NEW] Added file health checking
+- [NEW] Added caching for categories
 - [FIX] Fixed online list errors when a question cannot be found
+- [CHANGE] FAQ alert preferences will only be shown to those who can either a) manage the FAQ or b) have the ability to like answers
 
 Version 2.0.2
 ---------------

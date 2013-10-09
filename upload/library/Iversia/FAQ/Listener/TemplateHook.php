@@ -18,12 +18,19 @@ class Iversia_FAQ_Listener_TemplateHook
         if (isset($tabPosition['type']) and $tabPosition['type'] != 'default') {
 
     		$visitor = XenForo_Visitor::getInstance();
+            $faqCatModel = XenForo_Model::create('Iversia_FAQ_Model_Category');
 
-    		$faqCatModel = XenForo_Model::create('Iversia_FAQ_Model_Category');
+            // Look for cached categories
+            $faqLinks['faqCats'] = XenForo_Application::getSimpleCacheData('faq_categories');
+
+            if (! $faqLinks['faqCats']) {
+                // Create cache
+                $categories = $faqCatModel->getAll(XenForo_Application::get('options')->faqCatNavCount);
+                $faqLinks['faqCats'] = XenForo_Application::setSimpleCacheData('faq_categories', $categories);
+            }
 
     		$faqLinks['canManageFAQ']     = XenForo_Permission::hasPermission($visitor['permissions'], 'FAQ_Manager_Permissions', 'manageFAQ');
     		$faqLinks['canManageCats']    = $faqCatModel->canManageCategories();
-    		$faqLinks['faqCats']          = $faqCatModel->getAll(XenForo_Application::get('options')->faqCatNavCount);
 
     		$extraTabs['faq'] = array(
     			'title'			=> new XenForo_Phrase('iversia_faq'),

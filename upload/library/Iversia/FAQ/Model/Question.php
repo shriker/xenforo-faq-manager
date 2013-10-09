@@ -47,9 +47,9 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
     public function prepareUserOrderOptions(array &$fetchOptions, $defaultOrderSql = '')
     {
         $choices = array(
-            'question'      => 'sticky desc, question',
-            'view_count'    => 'sticky desd, view_count',
-            'submit_date'   => 'sticky desc, submit_date',
+            'question'      => 'sticky desc, xf_faq_question.display_order asc, question',
+            'view_count'    => 'sticky desc, xf_faq_question.display_order asc, view_count',
+            'submit_date'   => 'sticky desc, xf_faq_question.display_order asc, submit_date',
         );
 
         return $this->getOrderByClause($choices, $fetchOptions, $defaultOrderSql);
@@ -94,7 +94,7 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
 
     public function getSticky($limit, $category_id = null)
     {
-        return $this->fetchAllKeyed("SELECT * FROM xf_faq_question WHERE sticky = 1 ORDER BY view_count DESC LIMIT $limit", 'faq_id');
+        return $this->fetchAllKeyed("SELECT * FROM xf_faq_question WHERE sticky = 1 ORDER BY display_order ASC, view_count DESC LIMIT $limit", 'faq_id');
     }
 
     public function getQuestionsByIds(array $questionIds)

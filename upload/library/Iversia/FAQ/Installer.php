@@ -34,6 +34,7 @@ class Iversia_FAQ_Installer
                     `category_id` int(10) unsigned NOT NULL DEFAULT '0',
                     `moderation` tinyint(1) unsigned NOT NULL DEFAULT '0',
                     `sticky` tinyint(1) unsigned NOT NULL DEFAULT '0',
+                    `display_order` int(10) unsigned NOT NULL DEFAULT '1',
                     `user_id` int(10) unsigned NOT NULL DEFAULT '0',
                     `question` varchar(150) NOT NULL,
                     `answer` text NOT NULL,
@@ -119,6 +120,7 @@ class Iversia_FAQ_Installer
                 );
 
                 $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `sticky` tinyint NOT NULL DEFAULT '0' AFTER `moderation`;");
+                $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `display_order` tinyint NOT NULL DEFAULT '0' AFTER `moderation`;");
             }
 
             XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
@@ -153,6 +155,9 @@ class Iversia_FAQ_Installer
 
         // Remove content type fields
         $db->query("DELETE FROM xf_content_type_field WHERE content_type IN ('xf_faq_question');");
+
+        // Delete from cache
+        XenForo_Application::setSimpleCacheData('faq_categories', false);
 
         // Bye caches!
         XenForo_Model::create('XenForo_Model_DataRegistry')->delete('faqCache');

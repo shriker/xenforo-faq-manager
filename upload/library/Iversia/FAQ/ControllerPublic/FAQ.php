@@ -131,6 +131,9 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
         );
         $dw->save();
 
+        // Delete from cache
+        XenForo_Application::setSimpleCacheData('faq_categories', false);
+
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
             XenForo_Link::buildPublicLink('faq'),
@@ -154,6 +157,9 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 
         // Delete associated questions
         $this->_getQuestionModel()->deleteOrphanQuestions($category_id);
+
+        // Delete from cache
+        XenForo_Application::setSimpleCacheData('faq_categories', false);
 
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
@@ -332,6 +338,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
                     'category_id'       => $input['category_id'],
                     'moderation'        => 0,
                     'sticky'            => $input['sticky'],
+                    'display_order'     => $this->_input->filterSingle('display_order', XenForo_Input::UINT),
                     'question'          => $input['question'],
                     'answer'            => $input['answer'],
                     'answer_date'       => XenForo_Application::$time, // Last updated
@@ -351,6 +358,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
                     'category_id'       => $input['category_id'],
                     'moderation'        => 0,
                     'sticky'            => $input['sticky'],
+                    'display_order'     => $this->_input->filterSingle('display_order', XenForo_Input::UINT),
                     'question'          => $input['question'],
                     'answer'            => $input['answer'],
                 )
