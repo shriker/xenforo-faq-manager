@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="2.2.0" version_id="220" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="2.2.1" version_id="221" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -883,7 +883,7 @@ desc={xen:phrase descending_order}</edit_format_params>
 </h3>
 
 <p class="snippet">{xen:helper snippet, $content.message, 100, {xen:array 'stripQuote=1'}}</p>]]></template>
-    <template title="search_form_question" version_id="202" version_string="2.0.2"><![CDATA[<xen:title>{xen:phrase search_faq}</xen:title>
+    <template title="search_form_question" version_id="220" version_string="2.2.0"><![CDATA[<xen:title>{xen:phrase search_faq}</xen:title>
 
 <xen:navigation>
 	<xen:breadcrumb href="{xen:link full:search}">{xen:phrase search}</xen:breadcrumb>
@@ -891,11 +891,7 @@ desc={xen:phrase descending_order}</edit_format_params>
 
 <form action="{xen:link 'search/search'}" method="post" class="xenForm AutoValidator" data-optInOut="optIn" data-redirect="true">
 
-	<ul class="tabs">
-		<li><a href="{xen:link search}">{xen:phrase search_everything}</a></li>
-		<li><a href="{xen:link search, '', 'type=post'}">{xen:phrase search_threads_and_posts}</a></li>
-		<li class="active"><a href="{xen:link search, '', 'type=xf_faq_question'}">{xen:phrase search_faq}</a></li>
-	</ul>
+<xen:include template="search_form_tabs" />
 	
 	<dl class="ctrlUnit">
 		<dt><label for="ctrl_keywords">{xen:phrase keywords}:</label></dt>
@@ -977,9 +973,9 @@ desc={xen:phrase descending_order}</edit_format_params>
 <li><a href="{xen:link help/smilies}" class="{xen:if "{$selected} == 'smilies'", 'secondaryContent', 'primaryContent'}">{xen:phrase smilies}</a></li>]]></replace>
     </modification>
     <modification template="search_form_tabs" modification_key="faq_search_form_tabs" description="Add FAQ to search form tab." execution_order="10" enabled="1" action="str_replace">
-      <find><![CDATA[</xen:hook>]]></find>
-      <replace><![CDATA[<li{xen:if "{$searchType} == 'xf_faq_question'", ' class="active"'}><a href="{xen:link search, '', 'type=xf_faq_question'}">{xen:phrase search_faq}</a></li>
-$0]]></replace>
+      <find><![CDATA[<li{xen:if "{$searchType} == 'profile_post'", ' class="active"'}><a href="{xen:link search, '', 'type=profile_post'}">{xen:phrase search_profile_posts}</a></li>]]></find>
+      <replace><![CDATA[$0
+<li{xen:if "{$searchType} == 'xf_faq_question'", ' class="active"'}><a href="{xen:link search, '', 'type=xf_faq_question'}">{xen:phrase search_faq}</a></li>]]></replace>
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>
