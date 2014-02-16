@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="2.2.1" version_id="221" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="3.0.0" version_id="300" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -29,7 +29,6 @@
   <code_events/>
   <code_event_listeners>
     <listener event_id="file_health_check" execute_order="10" callback_class="Iversia_FAQ_Listener_Extend" callback_method="fileHealthCheck" active="1" hint="" description="FAQ file health check."/>
-    <listener event_id="load_class_bb_code" execute_order="10" callback_class="Iversia_FAQ_Listener_BbCode" callback_method="listen" active="1" hint="" description="Adds FAQ BBCode for questions"/>
     <listener event_id="navigation_tabs" execute_order="10" callback_class="Iversia_FAQ_Listener_TemplateHook" callback_method="navTabs" active="1" hint="" description="Adds FAQ top NavBar tab"/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="Iversia_FAQ_Listener_Widgets" callback_method="widget_framework_ready" active="1" hint="" description="Adds widgets for [bd] Widget Framework."/>
   </code_event_listeners>
@@ -113,6 +112,7 @@ desc={xen:phrase descending_order}</edit_format_params>
       <permission permission_group_id="FAQ_Manager_Permissions" permission_id="canLikeFAQ" permission_type="flag" default_value="unset" interface_group_id="faqPermissions" display_order="9000"/>
       <permission permission_group_id="FAQ_Manager_Permissions" permission_id="manageFAQ" permission_type="flag" default_value="unset" interface_group_id="faqPermissions" display_order="1"/>
       <permission permission_group_id="FAQ_Manager_Permissions" permission_id="manageFAQCategories" permission_type="flag" default_value="unset" interface_group_id="faqPermissions" display_order="1"/>
+      <permission permission_group_id="FAQ_Manager_Permissions" permission_id="uploadFAQAttach" permission_type="flag" default_value="unset" interface_group_id="faqPermissions" display_order="70"/>
     </permissions>
     <interface_groups>
       <interface_group interface_group_id="faqPermissions" display_order="3"/>
@@ -121,6 +121,8 @@ desc={xen:phrase descending_order}</edit_format_params>
   <phrases>
     <phrase title="cron_entry_faqCache" version_id="90" version_string="1.0.0"><![CDATA[[Iversia] FAQ Update BB Code Cache]]></phrase>
     <phrase title="cron_entry_faqStats" version_id="90" version_string="1.0.0"><![CDATA[[Iversia] FAQ Update Statistics]]></phrase>
+    <phrase title="custom_bb_code_faq_desc" version_id="220" version_string="2.2.0"><![CDATA[Displays a link to a FAQ entry for quick reference.]]></phrase>
+    <phrase title="custom_bb_code_faq_title" global_cache="1" version_id="220" version_string="2.2.0"><![CDATA[FAQ]]></phrase>
     <phrase title="faq_bb_code_help" version_id="90" version_string="1.0.0"><![CDATA[[FAQ] - Link to a FAQ]]></phrase>
     <phrase title="faq_bb_code_help_desc" version_id="90" version_string="1.0.0"><![CDATA[Inserts a link to the specified FAQ entry.]]></phrase>
     <phrase title="faq_display_end" version_id="200" version_string="2.0.0"><![CDATA[Display End]]></phrase>
@@ -191,6 +193,7 @@ desc={xen:phrase descending_order}</edit_format_params>
     <phrase title="permission_FAQ_Manager_Permissions_canLikeFAQ" version_id="101" version_string="1.0.1"><![CDATA[Can Like FAQ answers]]></phrase>
     <phrase title="permission_FAQ_Manager_Permissions_manageFAQ" version_id="90" version_string="1.0.0"><![CDATA[Can manage FAQ content]]></phrase>
     <phrase title="permission_FAQ_Manager_Permissions_manageFAQCategories" version_id="90" version_string="1.0.0"><![CDATA[Can manage FAQ categories]]></phrase>
+    <phrase title="permission_FAQ_Manager_Permissions_uploadFAQAttach" version_id="300" version_string="3.0.0"><![CDATA[Upload images with questions]]></phrase>
     <phrase title="permission_group_FAQ_Manager_Permissions" version_id="100" version_string="1.0.0"><![CDATA[FAQ Manager Permissions]]></phrase>
     <phrase title="permission_interface_faqPermissions" version_id="100" version_string="1.0.0"><![CDATA[FAQ Manager Permissions]]></phrase>
     <phrase title="search_faq" version_id="202" version_string="2.0.2"><![CDATA[Search FAQ]]></phrase>
@@ -454,7 +457,7 @@ desc={xen:phrase descending_order}</edit_format_params>
 		
 	</form>
 </div>]]></template>
-    <template title="iversia_faq_edit" version_id="210" version_string="2.1.0"><![CDATA[<xen:title>{xen:phrase iversia_faq_edit}</xen:title>
+    <template title="iversia_faq_edit" version_id="300" version_string="3.0.0"><![CDATA[<xen:title>{xen:phrase iversia_faq_edit}</xen:title>
 
 <xen:navigation>
 	<xen:breadcrumb href="{xen:link full:faq/edit, $question}">{xen:phrase iversia_faq_edit}</xen:breadcrumb>
@@ -506,12 +509,22 @@ desc={xen:phrase descending_order}</edit_format_params>
 			
 			<dl class="ctrlUnit submitUnit">
 				<dt></dt>
-				<dd><input type="submit" name="save" value="{xen:phrase save}" accesskey="s" class="button primary" /></dd>
+				<dd><input type="submit" name="save" value="{xen:phrase save}" accesskey="s" class="button primary" />
+				<xen:include template="attachment_upload_button" />
+				</dd>
 			</dl>
 			
 			<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 			
 		</fieldset>
+		
+		<xen:if is="{$attachmentParams}">
+		<dl class="ctrlUnit AttachedFilesUnit">
+			<dt><label for="ctrl_uploader">{xen:phrase attached_files}:</label></dt>
+			<dd><xen:include template="attachment_editor" /></dd>
+		</dl>
+		
+	</xen:if>
 		
 	</form>
 </div>]]></template>
@@ -696,7 +709,7 @@ desc={xen:phrase descending_order}</edit_format_params>
 
     </div>
 </div>]]></template>
-    <template title="iversia_faq_questions" version_id="210" version_string="2.1.0"><![CDATA[<div class="section sectionMain">
+    <template title="iversia_faq_questions" version_id="220" version_string="2.2.0"><![CDATA[<div class="section sectionMain">
     <xen:if hascontent="true">
         <xen:contentcheck>
             <xen:foreach loop="$faq" value="$question" i="$i">
@@ -883,7 +896,7 @@ desc={xen:phrase descending_order}</edit_format_params>
 </h3>
 
 <p class="snippet">{xen:helper snippet, $content.message, 100, {xen:array 'stripQuote=1'}}</p>]]></template>
-    <template title="search_form_question" version_id="220" version_string="2.2.0"><![CDATA[<xen:title>{xen:phrase search_faq}</xen:title>
+    <template title="search_form_question" version_id="300" version_string="3.0.0"><![CDATA[<xen:title>{xen:phrase search_faq}</xen:title>
 
 <xen:navigation>
 	<xen:breadcrumb href="{xen:link full:search}">{xen:phrase search}</xen:breadcrumb>
@@ -891,7 +904,7 @@ desc={xen:phrase descending_order}</edit_format_params>
 
 <form action="{xen:link 'search/search'}" method="post" class="xenForm AutoValidator" data-optInOut="optIn" data-redirect="true">
 
-<xen:include template="search_form_tabs" />
+	<xen:include template="search_form_tabs" />
 	
 	<dl class="ctrlUnit">
 		<dt><label for="ctrl_keywords">{xen:phrase keywords}:</label></dt>
@@ -979,4 +992,12 @@ desc={xen:phrase descending_order}</edit_format_params>
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>
+  <bb_codes>
+    <bb_code bb_code_id="faq" bb_code_mode="callback" has_option="yes" callback_class="Iversia_FAQ_BbCode_Formatter_Base" callback_method="renderTagFAQ" option_regex="/^[0-9]+$/i" trim_lines_after="2" plain_children="0" disable_smilies="1" disable_nl2br="1" disable_autolink="1" allow_signature="1" editor_icon_url="" sprite_mode="0" active="1">
+      <replace_html><![CDATA[]]></replace_html>
+      <replace_html_email><![CDATA[]]></replace_html_email>
+      <replace_text><![CDATA[]]></replace_text>
+      <example><![CDATA[]]></example>
+    </bb_code>
+  </bb_codes>
 </addon>

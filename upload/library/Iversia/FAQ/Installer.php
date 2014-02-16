@@ -18,8 +18,8 @@ class Iversia_FAQ_Installer
 
     public static function install($existingAddOn, $addOnData)
     {
-        if (XenForo_Application::$versionId < 1020031) {
-            throw new XenForo_Exception('This add-on requires XenForo 1.2.x or higher.', true);
+        if (XenForo_Application::$versionId < 1030032) {
+            throw new XenForo_Exception('This add-on requires XenForo 1.3.0 or higher.', true);
         }
 
         $version = is_array($existingAddOn) ? $existingAddOn['version_id'] : 0;
@@ -40,6 +40,7 @@ class Iversia_FAQ_Installer
                     `answer` text NOT NULL,
                     `submit_date` int(10) unsigned NOT NULL DEFAULT '0',
                     `answer_date` int(10) unsigned NOT NULL DEFAULT '0',
+                    `attach_count` int(10) NOT NULL,
                     `view_count` int(10) unsigned NOT NULL DEFAULT '0',
                     `likes` int(10) unsigned NOT NULL,
                     `like_users` blob NOT NULL,
@@ -80,6 +81,7 @@ class Iversia_FAQ_Installer
                 "INSERT INTO xf_content_type_field
                     (content_type, field_name, field_value)
                 VALUES
+                    ('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question'),
                     ('xf_faq_question', 'search_handler_class', 'Iversia_FAQ_Search_DataHandler_Question'),
                     ('xf_faq_question', 'alert_handler_class', 'Iversia_FAQ_AlertHandler_Question'),
                     ('xf_faq_question', 'like_handler_class', 'Iversia_FAQ_LikeHandler_Question');"
@@ -126,6 +128,19 @@ class Iversia_FAQ_Installer
                 $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `display_order` tinyint NOT NULL DEFAULT '0' AFTER `moderation`;");
             }
 
+            // Adding attachments
+            if ($version < 250) {
+
+                $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `attach_count` int(10) AFTER `answer_date`;");
+
+                $db->query(
+                    "INSERT INTO xf_content_type_field
+                        (content_type, field_name, field_value)
+                    VALUES
+                        ('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question');"
+                );
+            }
+
             XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
 
         }
@@ -149,6 +164,10 @@ class Iversia_FAQ_Installer
         $faqIds = $db->fetchAll("SELECT faq_id FROM xf_faq_question");
         XenForo_Model::create('XenForo_Model_Alert')->deleteAlerts('xf_faq_question', $faqIds);
         XenForo_Model::create('XenForo_Model_Like')->deleteContentLikes('xf_faq_question', $faqIds);
+
+        // Unassociate FAQ Attachments
+        // An hourly cron runs which will then prune unassociated and unused attachments
+        $db->query('UPDATE xf_attachment set unassociated = 1 WHERE content_type = \'xf_faq_question\'');
 
         // Delete questions and categories
         $db->query('DROP TABLE IF EXISTS `xf_faq_question`, `xf_faq_category`;');

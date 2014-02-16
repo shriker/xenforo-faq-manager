@@ -1,3 +1,8 @@
+Version 3.0.0
+---------------
+- [CHANGE] XenForo 1.3 or higher now required
+- [NEW] Upload attachments
+
 Version 2.2.0
 ---------------
 - [NEW] 100% Integrated with XenForo search

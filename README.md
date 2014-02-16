@@ -8,6 +8,7 @@ Features
 * Full FAQ with adding, editing and deleting
 * Question categories
 * 100% integrated with XenForo search
+* Upload attachments to answers
 * Sticky questions
 * Site members can Like answers
 * BBCode supported answer fields
@@ -30,7 +31,7 @@ Demo
 
 Requirements
 ------------
-* [XenForo](http://xenforo.com/) 1.2+
+* [XenForo](http://xenforo.com/) 1.3+
 
 Download
 ------------

@@ -2,7 +2,6 @@
 
 class Iversia_FAQ_Model_Question extends XenForo_Model
 {
-
     public function getById($faq_id, $moderation = 0)
     {
         return $this->_getDb()->fetchRow('
@@ -16,15 +15,13 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
         $limitOptions   = $this->prepareLimitFetchOptions($fetchOptions);
         $orderClause    = $this->prepareUserOrderOptions($fetchOptions);
 
-        $query = $this->fetchAllKeyed($this->limitQueryResults(
+        return $this->fetchAllKeyed($this->limitQueryResults(
             'SELECT *, c.title
              FROM xf_faq_question
              LEFT JOIN xf_faq_category c ON (c.category_id = xf_faq_question.category_id)
              '. $orderClause .'
             ', $limitOptions['limit'], $limitOptions['offset']
         ), 'faq_id');
-
-        return $query;
     }
 
     public function getAllCategory($category_id, $fetchOptions = array())
@@ -152,5 +149,64 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
         }
 
         return false;
+    }
+
+    public function getAttachmentParams(array $contentData = array(), array $viewingUser = null, $tempHash = null)
+    {
+        if ($this->canUploadAndManageAttachment($null, $viewingUser)) {
+            return array(
+                'hash' => $tempHash ? $tempHash : md5(uniqid('', true)),
+                'content_type' => 'xf_faq_question',
+                'content_data' => $contentData
+            );
+        } else {
+            return false;
+        }
+    }
+
+    public function canUploadAndManageAttachment(&$errorPhraseKey = '', array $viewingUser = null)
+    {
+        $this->standardizeViewingUserReference($viewingUser);
+
+        return ($viewingUser['user_id']
+            && XenForo_Permission::hasPermission($viewingUser['permissions'], 'FAQ_Manager_Permissions', 'uploadFAQAttach')
+        );
+    }
+
+    public function getAndMergeAttachmentsIntoQuestion($questions, $faq_id = null)
+    {
+        $attachmentModel = $this->_getAttachmentModel();
+        $questionIds = array();
+
+        if ($faq_id != null) {
+
+            foreach ($attachmentModel->getAttachmentsByContentId('xf_faq_question', $faq_id) AS $attachmentId => $attachment)
+            {
+                $questions['attachments'][$attachment['attachment_id']] = $attachmentModel->prepareAttachment($attachment);
+            }
+
+        } else {
+
+            foreach ($questions AS $questionId => $question)
+            {
+                if ($question['attach_count']) {
+                    $questionIds[] = $questionId;
+                }
+            }
+
+            if ($questionIds) {
+                foreach ($attachmentModel->getAttachmentsByContentIds('xf_faq_question', $questionIds) AS $attachment)
+                {
+                    $questions[$attachment['content_id']]['attachments'][$attachment['attachment_id']] = $attachmentModel->prepareAttachment($attachment);
+                }
+            }
+        }
+
+        return $questions;
+    }
+
+    protected function _getAttachmentModel()
+    {
+        return $this->getModelFromCache('XenForo_Model_Attachment');
     }
 }

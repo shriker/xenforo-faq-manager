@@ -12,6 +12,8 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
      */
     public function actionIndex()
     {
+        $questionModel = $this->_getQuestionModel();
+
         $faq_id = $this->_input->filterSingle('faq_id', XenForo_Input::UINT);
         $page   = $this->_input->filterSingle('page', XenForo_Input::UINT);
 
@@ -21,21 +23,24 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 
         $faqPerPage     = XenForo_Application::get('options')->faqPerPage;
 
+        $questions = $questionModel->getAll(array(
+            'perPage'   => $faqPerPage,
+            'page'      => $page,
+            'order'     => XenForo_Application::get('options')->faqSortOrder,
+            'direction' => XenForo_Application::get('options')->faqSortOrderDir,
+        ));
+
+        // Get attachments
+        $questions = $questionModel->getAndMergeAttachmentsIntoQuestion($questions);
+
         $viewParams = array(
-            'faq'=> $this->_getQuestionModel()->getAll(
-                array(
-                    'perPage'   => $faqPerPage,
-                    'page'      => $page,
-                    'order'     => XenForo_Application::get('options')->faqSortOrder,
-                    'direction' => XenForo_Application::get('options')->faqSortOrderDir,
-                )
-            ),
+            'faq'           => $questions,
             'page'          => $page,
             'faqPerPage'    => $faqPerPage,
             'faqTotal'      => $this->_getQuestionModel()->getTotal(),
             // Sidebar
             'popular'       => $this->_getQuestionModel()->getPopular(5),
-            'latest'       => $this->_getQuestionModel()->getLatest(5),
+            'latest'        => $this->_getQuestionModel()->getLatest(5),
             'faqStats'      => XenForo_Model::create('XenForo_Model_DataRegistry')->get('faqStats'),
             // Permissions
             'canManageFAQ'  => $this->_getQuestionModel()->canManageFAQ(),
@@ -53,6 +58,8 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
         $category_id = $this->_input->filterSingle('category_id', XenForo_Input::UINT);
         $page = $this->_input->filterSingle('page', XenForo_Input::UINT);
 
+        $questionModel = $this->_getQuestionModel();
+
         $faqPerPage = XenForo_Application::get('options')->faqPerPage;
 
         $category = $this->_getCategoryModel()->getById($category_id);
@@ -61,26 +68,31 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             throw $this->responseException($this->responseError(new XenForo_Phrase('requested_page_not_found'), 404));
         }
 
+        $questions = $questionModel->getAllCategory(
+            $category_id,
+            array(
+                'perPage'   => $faqPerPage,
+                'page'      => $page,
+                'order'     => XenForo_Application::get('options')->faqSortOrder,
+                'direction' => XenForo_Application::get('options')->faqSortOrderDir,
+            )
+        );
+
+        // Get attachments
+        $questions = $questionModel->getAndMergeAttachmentsIntoQuestion($questions);
+
         $viewParams = array(
-            'faq' => $this->_getQuestionModel()->getAllCategory(
-                $category_id,
-                array(
-                    'perPage'   => $faqPerPage,
-                    'page'      => $page,
-                    'order'     => XenForo_Application::get('options')->faqSortOrder,
-                    'direction' => XenForo_Application::get('options')->faqSortOrderDir,
-                )
-            ),
+            'faq' => $questions,
             'page'               => $page,
             'faqPerPage'         => $faqPerPage,
-            'faqCatTotal'        => $this->_getQuestionModel()->getCategoryTotal($category_id),
+            'faqCatTotal'        => $questionModel->getCategoryTotal($category_id),
             'faqcategory'        => $category,
             // Sidebar
-            'popular'       => $this->_getQuestionModel()->getPopular(5),
-            'latest'       => $this->_getQuestionModel()->getLatest(5),
+            'popular'       => $questionModel->getPopular(5),
+            'latest'        => $questionModel->getLatest(5),
             'faqStats'      => XenForo_Model::create('XenForo_Model_DataRegistry')->get('faqStats'),
             // Permissions
-            'canManageFAQ'  => $this->_getQuestionModel()->canManageFAQ(),
+            'canManageFAQ'  => $questionModel->canManageFAQ(),
             'canManageCats' => $this->_getCategoryModel()->canManageCategories(),
         );
 
@@ -93,8 +105,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
     public function actionCategoryCreate()
     {
         $this->_assertCanManageCategories();
-        $viewParams = array();
-        return $this->responseView('Iversia_FAQ_ViewPublic_Category', 'iversia_faq_create_category', $viewParams);
+        return $this->responseView('Iversia_FAQ_ViewPublic_Category', 'iversia_faq_create_category', array());
     }
 
     /**
@@ -175,26 +186,31 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
     {
         $faq_id = $this->_input->filterSingle('faq_id', XenForo_Input::UINT);
 
+        $questionModel = $this->_getQuestionModel();
+
         $user_id = XenForo_Visitor::getUserId();
 
-        $question = $this->_getQuestionModel()->getById($faq_id);
+        $question = $questionModel->getById($faq_id);
 
         if (!$question) {
             throw $this->responseException($this->responseError(new XenForo_Phrase('requested_page_not_found'), 404));
         }
 
-        $this->_getQuestionModel()->logQuestionView($faq_id);
+        $questionModel->logQuestionView($faq_id);
+
+        // Get attachments
+        $question = $questionModel->getAndMergeAttachmentsIntoQuestion($question, $question['faq_id']);
 
         // Likes
-        $likeModel = $this->_getLikeModel();
-        $question['like_users'] = unserialize($question['like_users']);
-        $question['like_date'] = $likeModel->getContentLikeByLikeUser('xf_faq_question', $faq_id, $user_id);
+        $likeModel                 = $this->_getLikeModel();
+        $question['like_users']    = unserialize($question['like_users']);
+        $question['like_date']     = $likeModel->getContentLikeByLikeUser('xf_faq_question', $faq_id, $user_id);
 
         $viewParams = array(
             'question'      => $question,
             'categories'    => $this->_getCategoryModel()->getAll(),
-            'canManageFAQ'  => $this->_getQuestionModel()->canManageFAQ(),
-            'canLikeFAQ'    => $this->_getQuestionModel()->canLikeFAQ(),
+            'canManageFAQ'  => $questionModel->canManageFAQ(),
+            'canLikeFAQ'    => $questionModel->canLikeFAQ(),
         );
 
         return $this->getWrapper('faq', 'x', $this->responseView('Iversia_FAQ_ViewPublic_Permalink', 'iversia_faq_question', $viewParams));
@@ -304,10 +320,21 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
         $this->_assertCanManageFAQ();
 
         $faq_id = $this->_input->filterSingle('faq_id', XenForo_Input::UINT);
+        $question = $this->_getQuestionModel()->getById($faq_id);
+
+        $questionModel = $this->_getQuestionModel();
+        $attachmentModel = $this->_getAttachmentModel();
+
+        $attachmentParams = $questionModel->getAttachmentParams($question);
+        $attachments = $attachmentModel->getAttachmentsByContentId('xf_faq_question', $question['faq_id']);
+        $attachments = $attachmentModel->prepareAttachments($attachments);
 
         $viewParams = array(
             'categories'    => $this->_getCategoryModel()->getAll(),
-            'question'      => $this->_getQuestionModel()->getById($faq_id)
+            'question'      => $question,
+            'attachmentParams' => $attachmentParams,
+            'attachments' => $attachments,
+            'attachmentConstraints' => $attachmentModel->getAttachmentConstraints(),
         );
 
         return $this->responseView('Iversia_FAQ_ViewPublic_Edit', 'iversia_faq_edit', $viewParams);
@@ -322,11 +349,12 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
         $visitor = XenForo_Visitor::getInstance();
 
         $input = array();
-        $input['question']      = $this->_input->filterSingle('question', XenForo_Input::STRING);
-        $input['category_id']   = $this->_input->filterSingle('category_id', XenForo_Input::UINT);
-        $input['sticky']   = $this->_input->filterSingle('sticky', XenForo_Input::UINT);
-        $input['answer']        = $this->getHelper('Editor')->getMessageText('message', $this->_input);
-        $input['answer']        = XenForo_Helper_String::autoLinkBbCode($input['answer']);
+        $input['question']          = $this->_input->filterSingle('question', XenForo_Input::STRING);
+        $input['category_id']       = $this->_input->filterSingle('category_id', XenForo_Input::UINT);
+        $input['sticky']            = $this->_input->filterSingle('sticky', XenForo_Input::UINT);
+        $input['answer']            = $this->getHelper('Editor')->getMessageText('message', $this->_input);
+        $input['answer']            = XenForo_Helper_String::autoLinkBbCode($input['answer']);
+        $input['attachment_hash']   = $this->_input->filterSingle('attachment_hash', XenForo_Input::STRING);
 
         // New question
         if ($faq_id) {
@@ -344,6 +372,8 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
                     'answer_date'       => XenForo_Application::$time, // Last updated
                 )
             );
+
+            $dw->setExtraData(Iversia_FAQ_DataWriter_Question::DATA_ATTACHMENT_HASH, $input['attachment_hash']);
             $dw->save();
 
             $returnLink = XenForo_Link::buildPublicLink('full:faq', array('faq_id' => $faq_id, 'question' => $input['question']));
@@ -363,6 +393,8 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
                     'answer'            => $input['answer'],
                 )
             );
+
+            $dw->setExtraData(Iversia_FAQ_DataWriter_Question::DATA_ATTACHMENT_HASH, $input['attachment_hash']);
             $dw->save();
 
             $question = $dw->getMergedData();
@@ -480,5 +512,10 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
     protected function _getLikeModel()
     {
         return $this->getModelFromCache('XenForo_Model_Like');
+    }
+
+    protected function _getAttachmentModel()
+    {
+        return $this->getModelFromCache('XenForo_Model_Attachment');
     }
 }

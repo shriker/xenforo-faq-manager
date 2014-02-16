@@ -21,6 +21,7 @@ class Iversia_FAQ_Listener_TemplateHook
             $faqCatModel = XenForo_Model::create('Iversia_FAQ_Model_Category');
 
             // Look for cached categories
+            $faqLinks = array();
             $faqLinks['faqCats'] = XenForo_Application::getSimpleCacheData('faq_categories');
 
             if (! $faqLinks['faqCats']) {

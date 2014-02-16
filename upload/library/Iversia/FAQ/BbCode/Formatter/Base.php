@@ -1,61 +1,10 @@
 <?php
 /**
  * Iversia_FAQ_BbCode_Formatter_Base class.
- *
- * @extends XFCP_Iversia_FAQ_BbCode_Formatter_Base
  */
-class Iversia_FAQ_BbCode_Formatter_Base extends XFCP_Iversia_FAQ_BbCode_Formatter_Base
+class Iversia_FAQ_BbCode_Formatter_Base
 {
-    protected $_tags;
-
-    /**
-     * getTags function.
-     *
-     * @access public
-     * @return void
-     */
-    public function getTags()
-    {
-        if ($this->_tags !== null) {
-            return $this->_tags;
-        }
-
-        $this->_tags = parent::getTags();
-
-        $this->_tags['faq'] = array(
-            'hasOption' => true,
-            'optionRegex' => '/^[0-9]+$/i',
-            'plainChildren' => true,
-            'trimLeadingLinesAfter' => 2,
-            'callback'  => array($this, 'renderTagFAQ')
-        );
-
-        return $this->_tags;
-    }
-
-    /**
-     * preLoadTemplates function.
-     *
-     * @access public
-     * @param XenForo_View $view
-     * @return void
-     */
-    public function preLoadTemplates(XenForo_View $view)
-    {
-        $view->preLoadTemplate('iversia_faq_bbcode');
-
-        return parent::preLoadTemplates($view);
-    }
-
-    /**
-     * renderTagFAQ function.
-     *
-     * @access public
-     * @param array $tag
-     * @param array $rendererStates
-     * @return void
-     */
-    public function renderTagFAQ(array $tag, array $rendererStates)
+    public static function renderTagFAQ(array $tag, array $rendererStates, XenForo_BbCode_Formatter_Base $formatter)
     {
         $question_id = $tag['option'];
 
@@ -73,11 +22,14 @@ class Iversia_FAQ_BbCode_Formatter_Base extends XFCP_Iversia_FAQ_BbCode_Formatte
                     'question'  => $question,
                 );
 
-                if ($this->_view) {
-                    $template = $this->_view->createTemplateObject('iversia_faq_bbcode', $faqData);
+                $view = $formatter->getView();
+
+                if ($view) {
+                    $template = $view->createTemplateObject('iversia_faq_bbcode', $faqData);
                     return $template->render();
                 } else {
-                    return '<b>'.new XenForo_Phrase('iversia_faq').' #'.$tag['option'].':</b> <a href="'. XenForo_Link::buildPublicLink('faq', array('question' => $question['question'],'faq_id' => $question_id)) .'">'.htmlentities($question).'</a>';
+                    return '<b>'.new XenForo_Phrase('iversia_faq').' #'.$tag['option'].':</b>
+                    <a href="'. XenForo_Link::buildPublicLink('faq', array('question' => $question,'faq_id' => $question_id)) .'">'.htmlentities($question).'</a>';
                 }
 
             } else {
