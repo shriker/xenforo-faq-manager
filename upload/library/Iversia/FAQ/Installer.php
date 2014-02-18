@@ -64,10 +64,10 @@ class Iversia_FAQ_Installer
 
             // Insert default data
             $db->query(
-                "REPLACE INTO `xf_faq_category`
-                    (`title`, `display_order`)
+                "INSERT INTO `xf_faq_category`
+                    (`title`, `display_order`, `short_desc`, `long_desc`)
                 VALUES
-                    ('General', 0);"
+                    ('General', 0, 'This is a general category.', 'Feel free to edit this category.');"
             );
 
             // New content type
