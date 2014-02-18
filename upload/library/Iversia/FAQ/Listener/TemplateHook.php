@@ -32,6 +32,7 @@ class Iversia_FAQ_Listener_TemplateHook
 
     		$faqLinks['canManageFAQ']     = XenForo_Permission::hasPermission($visitor['permissions'], 'FAQ_Manager_Permissions', 'manageFAQ');
     		$faqLinks['canManageCats']    = $faqCatModel->canManageCategories();
+            $faqLinks['canAskQuestions']  = XenForo_Permission::hasPermission($visitor['permissions'], 'FAQ_Manager_Permissions', 'canAskQuestions');
 
     		$extraTabs['faq'] = array(
     			'title'			=> new XenForo_Phrase('iversia_faq'),

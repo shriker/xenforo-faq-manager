@@ -17,6 +17,7 @@ class Iversia_FAQ_ControllerHelper_FAQ extends XenForo_ControllerHelper_Abstract
 
             // Permissions
             'canManageFAQ'  => $this->_controller->getModelFromCache('Iversia_FAQ_Model_Question')->canManageFAQ(),
+            'canAskQuestions'  => $this->_controller->getModelFromCache('Iversia_FAQ_Model_Question')->canAskQuestions(),
         );
 
         $wrapper = $this->_controller->responseView('Iversia_FAQ_ViewPublic_Wrapper', 'faq_wrapper', $viewParams);

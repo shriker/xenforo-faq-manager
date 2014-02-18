@@ -35,17 +35,4 @@ class Iversia_FAQ_AttachmentHandler_Question extends XenForo_AttachmentHandler_A
     {
         return XenForo_Model::create('Iversia_FAQ_Model_Question');
     }
-
- /*
-
-
-    public function getContentLink(array $attachment, array $extraParams = array(), $skipPrepend = false)
-    {
-        $question = $this->getContentDataFromContentId($attachment['content_id']);
-        $extraParams['faq_id'] = $question['faq_id'];
-        $extraParams['question'] = $question['question'];
-        return XenForo_Link::buildPublicLink($this->_contentRoute, $update, $extraParams, $skipPrepend);
-    }
-
-    */
 }

@@ -56,6 +56,8 @@ class Iversia_FAQ_Installer
                     `category_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                     `title` varchar(120) NOT NULL,
                     `display_order` int(10) unsigned NOT NULL DEFAULT '1',
+                    `short_desc` varchar(255) NOT NULL,
+                    `long_desc` text,
                     PRIMARY KEY (`category_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
             );
@@ -82,6 +84,7 @@ class Iversia_FAQ_Installer
                     (content_type, field_name, field_value)
                 VALUES
                     ('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question'),
+                    ('xf_faq_question', 'moderation_queue_handler_class', 'Iversia_FAQ_ModerationQueueHandler_Question'),
                     ('xf_faq_question', 'search_handler_class', 'Iversia_FAQ_Search_DataHandler_Question'),
                     ('xf_faq_question', 'alert_handler_class', 'Iversia_FAQ_AlertHandler_Question'),
                     ('xf_faq_question', 'like_handler_class', 'Iversia_FAQ_LikeHandler_Question');"
@@ -133,16 +136,18 @@ class Iversia_FAQ_Installer
 
                 $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `attach_count` int(10) AFTER `answer_date`;");
 
+                $db->query("ALTER TABLE `xf_faq_category` ADD COLUMN `short_desc` varchar(255) NOT NULL AFTER `display_order`, ADD COLUMN `long_desc` text NOT NULL AFTER `short_desc`;");
+
                 $db->query(
                     "INSERT INTO xf_content_type_field
                         (content_type, field_name, field_value)
                     VALUES
-                        ('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question');"
+                        ('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question'),
+                        ('xf_faq_question', 'moderation_queue_handler_class', 'Iversia_FAQ_ModerationQueueHandler_Question');"
                 );
             }
 
             XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
-
         }
 
         unset($db);

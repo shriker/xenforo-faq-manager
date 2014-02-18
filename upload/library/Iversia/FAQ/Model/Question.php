@@ -10,6 +10,20 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
             WHERE f.faq_id = ?', $faq_id);
     }
 
+    public function getQuestionsByIds(array $questionIds)
+    {
+        if (!$questionIds) {
+            return array();
+        }
+
+        return $this->fetchAllKeyed('
+            SELECT question.*, user.*
+            FROM xf_faq_question AS question
+            LEFT JOIN xf_user AS user ON (user.user_id = question.user_id)
+            WHERE question.faq_id IN (' . $this->_getDb()->quote($questionIds) . ')
+        ', 'faq_id');
+    }
+
     public function getAll($fetchOptions = array())
     {
         $limitOptions   = $this->prepareLimitFetchOptions($fetchOptions);
@@ -19,6 +33,7 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
             'SELECT *, c.title
              FROM xf_faq_question
              LEFT JOIN xf_faq_category c ON (c.category_id = xf_faq_question.category_id)
+             WHERE moderation = 0
              '. $orderClause .'
             ', $limitOptions['limit'], $limitOptions['offset']
         ), 'faq_id');
@@ -33,7 +48,7 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
             '
             SELECT *
              FROM xf_faq_question
-             WHERE category_id = ?
+             WHERE category_id = ? and moderation = 0
              '. $orderClause .'
             ', $limitOptions['limit'], $limitOptions['offset']
         ), 'faq_id', $category_id);
@@ -81,25 +96,26 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
 
     public function getLatest($limit, $moderation = 0)
     {
-        return $this->fetchAllKeyed("SELECT * FROM xf_faq_question ORDER BY submit_date DESC LIMIT $limit", 'faq_id');
+        return $this->fetchAllKeyed("SELECT *
+            FROM xf_faq_question
+            WHERE moderation = $moderation
+            ORDER BY submit_date DESC LIMIT $limit", 'faq_id');
     }
 
     public function getPopular($limit, $moderation = 0)
     {
-        return $this->fetchAllKeyed("SELECT * FROM xf_faq_question ORDER BY view_count DESC LIMIT $limit", 'faq_id');
+        return $this->fetchAllKeyed("SELECT *
+            FROM xf_faq_question
+            WHERE moderation = $moderation
+            ORDER BY view_count DESC LIMIT $limit", 'faq_id');
     }
 
     public function getSticky($limit, $category_id = null)
     {
-        return $this->fetchAllKeyed("SELECT * FROM xf_faq_question WHERE sticky = 1 ORDER BY display_order ASC, view_count DESC LIMIT $limit", 'faq_id');
-    }
-
-    public function getQuestionsByIds(array $questionIds)
-    {
-        return $this->fetchAllKeyed('
-            SELECT *
+        return $this->fetchAllKeyed("SELECT *
             FROM xf_faq_question
-            WHERE faq_id IN ('.$this->_getDb()->quote($questionIds).')', 'faq_id');
+            WHERE sticky = 1 and moderation = 0
+            ORDER BY display_order ASC, view_count DESC LIMIT $limit", 'faq_id');
     }
 
     public function getFaqIdsInRange($start, $limit)
@@ -145,6 +161,17 @@ class Iversia_FAQ_Model_Question extends XenForo_Model
         $visitor = XenForo_Visitor::getInstance();
 
         if ($visitor->hasPermission('FAQ_Manager_Permissions', 'canLikeFAQ')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function canAskQuestions()
+    {
+        $visitor = XenForo_Visitor::getInstance();
+
+        if ($visitor->hasPermission('FAQ_Manager_Permissions', 'canAskQuestions')) {
             return true;
         }
 

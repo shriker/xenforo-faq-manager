@@ -2,6 +2,8 @@ Version 3.0.0
 ---------------
 - [CHANGE] XenForo 1.3 or higher now required
 - [NEW] Upload attachments
+- [NEW] Users may ask questions which then get added to the moderation queue in order to be answered
+- [NEW] Category descriptions and page descriptions
 
 Version 2.2.0
 ---------------

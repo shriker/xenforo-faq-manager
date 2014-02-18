@@ -37,17 +37,80 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             'faq'           => $questions,
             'page'          => $page,
             'faqPerPage'    => $faqPerPage,
-            'faqTotal'      => $this->_getQuestionModel()->getTotal(),
+            'faqTotal'      => $questionModel->getTotal(),
             // Sidebar
-            'popular'       => $this->_getQuestionModel()->getPopular(5),
-            'latest'        => $this->_getQuestionModel()->getLatest(5),
+            'popular'       => $questionModel->getPopular(5),
+            'latest'        => $questionModel->getLatest(5),
             'faqStats'      => XenForo_Model::create('XenForo_Model_DataRegistry')->get('faqStats'),
             // Permissions
-            'canManageFAQ'  => $this->_getQuestionModel()->canManageFAQ(),
+            'canManageFAQ'  => $questionModel->canManageFAQ(),
             'canManageCats' => $this->_getCategoryModel()->canManageCategories(),
+            'canAsk'        => $questionModel->canAskQuestions(),
         );
 
         return $this->getWrapper('faq', 'index', $this->responseView('Iversia_FAQ_ViewPublic_Index', 'iversia_faq_index', $viewParams));
+    }
+
+    /**
+     * Ask a question
+     */
+    public function actionAsk()
+    {
+        $questionModel = $this->_getQuestionModel();
+        $categoryModel = $this->_getCategoryModel();
+
+        $this->_assertRegistrationRequired();
+        $this->_assertCanAskQuestions();
+
+        $viewParams = array(
+            'categories'    => $categoryModel->getAll(),
+        );
+
+        return $this->responseView('Iversia_FAQ_ViewPublic_Ask', 'iversia_faq_ask', $viewParams);
+     }
+
+    /**
+     * Send asked question to moderation queue
+     */
+    public function actionAskSave()
+    {
+        $this->_assertRegistrationRequired();
+        $this->_assertCanAskQuestions();
+
+        $visitor = XenForo_Visitor::getInstance();
+
+        $input = array();
+        $input['question']          = $this->_input->filterSingle('question', XenForo_Input::STRING);
+        $input['category_id']       = $this->_input->filterSingle('category_id', XenForo_Input::UINT);
+
+        $dw = XenForo_DataWriter::create('Iversia_FAQ_DataWriter_Question');
+        $dw->bulkSet(
+            array(
+                'user_id'           => $visitor['user_id'],
+                'category_id'       => $input['category_id'],
+                'moderation'        => 1, // Put into the moderation queue
+                'sticky'            => 0,
+                'display_order'     => 0,
+                'question'          => $input['question'],
+                'answer'            => '',
+            )
+        );
+        $dw->save();
+
+        $question = $dw->getMergedData();
+
+        // Add to moderation queue
+        $this->getModelFromCache('XenForo_Model_ModerationQueue')->insertIntoModerationQueue(
+            'xf_faq_question',
+            $question['faq_id'],
+            XenForo_Application::$time
+        );
+
+        return $this->responseRedirect(
+            XenForo_ControllerResponse_Redirect::SUCCESS,
+            XenForo_Link::buildPublicLink('faq'),
+            new XenForo_Phrase('iversia_faq_question_added')
+        );
     }
 
     /**
@@ -94,6 +157,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             // Permissions
             'canManageFAQ'  => $questionModel->canManageFAQ(),
             'canManageCats' => $this->_getCategoryModel()->canManageCategories(),
+            'canAsk'        => $questionModel->canAskQuestions(),
         );
 
         return $this->getWrapper('category', $category_id, $this->responseView('Iversia_FAQ_ViewPublic_Index', 'iversia_faq_category', $viewParams));
@@ -138,6 +202,8 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             array(
                 'title'    => $this->_input->filterSingle('title', XenForo_Input::STRING),
                 'display_order'    => $this->_input->filterSingle('display_order', XenForo_Input::UINT),
+                'short_desc'    => $this->_input->filterSingle('short_desc', XenForo_Input::STRING),
+                'long_desc'    => $this->_input->filterSingle('long_desc', XenForo_Input::STRING),
             )
         );
         $dw->save();
@@ -145,9 +211,11 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
         // Delete from cache
         XenForo_Application::setSimpleCacheData('faq_categories', false);
 
+        $category  = $dw->getMergedData();
+
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
-            XenForo_Link::buildPublicLink('faq'),
+            XenForo_Link::buildPublicLink('faq/category', $category),
             $saveAction
         );
     }
@@ -211,6 +279,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             'categories'    => $this->_getCategoryModel()->getAll(),
             'canManageFAQ'  => $questionModel->canManageFAQ(),
             'canLikeFAQ'    => $questionModel->canLikeFAQ(),
+            'canAsk'        => $questionModel->canAskQuestions(),
         );
 
         return $this->getWrapper('faq', 'x', $this->responseView('Iversia_FAQ_ViewPublic_Permalink', 'iversia_faq_question', $viewParams));
@@ -356,7 +425,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
         $input['answer']            = XenForo_Helper_String::autoLinkBbCode($input['answer']);
         $input['attachment_hash']   = $this->_input->filterSingle('attachment_hash', XenForo_Input::STRING);
 
-        // New question
+        // Update existing
         if ($faq_id) {
 
             $dw = XenForo_DataWriter::create('Iversia_FAQ_DataWriter_Question');
@@ -380,7 +449,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             $saveAction = new XenForo_Phrase('iversia_faq_question_edited');
 
         } else {
-            // Updating existing question
+            // New question
             $dw = XenForo_DataWriter::create('Iversia_FAQ_DataWriter_Question');
             $dw->bulkSet(
                 array(
@@ -495,6 +564,13 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
     protected function _assertCanLikeFAQ()
     {
         if (!$this->_getQuestionModel()->canLikeFAQ()) {
+            throw $this->getNoPermissionResponseException();
+        }
+    }
+
+    protected function _assertCanAskQuestions()
+    {
+        if (!$this->_getQuestionModel()->canAskQuestions()) {
             throw $this->getNoPermissionResponseException();
         }
     }

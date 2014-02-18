@@ -8,7 +8,9 @@ class Iversia_FAQ_DataWriter_Category extends XenForo_DataWriter
 			'xf_faq_category' => array(
 				'category_id'	=> array('type' => self::TYPE_UINT, 'autoIncrement' => true),
 				'title'			=> array('type' => self::TYPE_STRING,'required' => true, 'maxLength' => 120),
-				'display_order'	=> array('type' => self::TYPE_UINT, 'required' => true, 'default' => 0)
+				'display_order'	=> array('type' => self::TYPE_UINT, 'required' => true, 'default' => 0),
+                'short_desc'    => array('type' => self::TYPE_STRING,   'required' => false, 'maxLength' => 255),
+                'long_desc'      => array('type' => self::TYPE_STRING,   'required' => false),
 			)
 		);
 	}

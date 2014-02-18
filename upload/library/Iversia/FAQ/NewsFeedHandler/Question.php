@@ -4,6 +4,6 @@ class Iversia_FAQ_NewsFeedHandler_Question extends XenForo_NewsFeedHandler_Abstr
 {
     public function getContentByIds(array $contentIds, $model, array $viewingUser)
     {
-        return $model->getModelFromCache('Iversia_FAQ_Model_Question')->getPagesByIDs($contentIds);
+        return $model->getModelFromCache('Iversia_FAQ_Model_Question')->getQuestionsByIds($contentIds);
     }
 }
