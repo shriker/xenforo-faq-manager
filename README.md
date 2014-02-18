@@ -8,7 +8,8 @@ Features
 * Full FAQ with adding, editing and deleting
 * Question categories
 * 100% integrated with XenForo search
-* Upload attachments to answers
+* Upload attachments to FAQ entries
+* Let your users submit questions which can then be answered via the regular moderation queue
 * Sticky questions
 * Site members can Like answers
 * BBCode supported answer fields
