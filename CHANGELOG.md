@@ -1,3 +1,8 @@
+- [NEW] Forced canonical URLs
+- [FIX] Incorrect class was being called for alerts
+- [FIX] Category heading no longer disappears when clicked
+- [FIX] Too small data type for display order on older installations
+
 Version 3.0.0
 ---------------
 - [CHANGE] XenForo 1.3 or higher now required

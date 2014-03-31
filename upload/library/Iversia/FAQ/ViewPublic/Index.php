@@ -14,10 +14,13 @@ class Iversia_FAQ_ViewPublic_Index extends XenForo_ViewPublic_Base
             'messageKey' => 'answer',
         );
 
-        foreach ($this->_params['faq'] as &$question) {
+        if (isset($this->_params['faq'])) {
 
-            $question['answer'] = XenForo_ViewPublic_Helper_Message::getBbCodeWrapper($question, $bbCodeParser, $bbCodeOptions);
+            foreach ($this->_params['faq'] as &$question) {
 
+                $question['answer'] = XenForo_ViewPublic_Helper_Message::getBbCodeWrapper($question, $bbCodeParser, $bbCodeOptions);
+
+            }
         }
     }
 }

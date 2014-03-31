@@ -12,7 +12,10 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
      */
     public function actionIndex()
     {
+        $viewParams = array();
+
         $questionModel = $this->_getQuestionModel();
+        $categoryModel = $this->_getCategoryModel();
 
         $faq_id = $this->_input->filterSingle('faq_id', XenForo_Input::UINT);
         $page   = $this->_input->filterSingle('page', XenForo_Input::UINT);
@@ -21,7 +24,16 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             return $this->responseReroute(__CLASS__, 'permalink');
         }
 
+        // Page Layout
+        $faqIndexLayout = XenForo_Application::get('options')->faqIndexLayout;
         $faqPerPage     = XenForo_Application::get('options')->faqPerPage;
+        $faqTotal       = $questionModel->getTotal();
+
+        $indexTemplate = 'iversia_faq_index';
+
+        if ($faqIndexLayout == 'jump_links') {
+            $indexTemplate = 'iversia_faq_jump_links';
+        }
 
         $questions = $questionModel->getAll(array(
             'perPage'   => $faqPerPage,
@@ -37,18 +49,27 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             'faq'           => $questions,
             'page'          => $page,
             'faqPerPage'    => $faqPerPage,
-            'faqTotal'      => $questionModel->getTotal(),
+            'faqTotal'      => $faqTotal,
             // Sidebar
             'popular'       => $questionModel->getPopular(5),
             'latest'        => $questionModel->getLatest(5),
             'faqStats'      => XenForo_Model::create('XenForo_Model_DataRegistry')->get('faqStats'),
-            // Permissions
-            'canManageFAQ'  => $questionModel->canManageFAQ(),
-            'canManageCats' => $this->_getCategoryModel()->canManageCategories(),
-            'canAsk'        => $questionModel->canAskQuestions(),
+            'categories' => $categoryModel->getAll(),
         );
 
-        return $this->getWrapper('faq', 'index', $this->responseView('Iversia_FAQ_ViewPublic_Index', 'iversia_faq_index', $viewParams));
+        // Permissions
+        $viewParams['canManageFAQ']  = $questionModel->canManageFAQ();
+        $viewParams['canManageCats'] = $categoryModel->canManageCategories();
+        $viewParams['canAsk']        = $questionModel->canAskQuestions();
+
+        $this->canonicalizeRequestUrl(XenForo_Link::buildPublicLink('faq'));
+        $this->canonicalizePageNumber($page, $faqPerPage, $faqTotal, 'faq');
+
+        return $this->getWrapper(
+            'faq',
+            'index',
+            $this->responseView('Iversia_FAQ_ViewPublic_Index', $indexTemplate, $viewParams)
+        );
     }
 
     /**
@@ -141,6 +162,11 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             )
         );
 
+        $faqCatTotal = $questionModel->getCategoryTotal($category_id);
+
+        $this->canonicalizeRequestUrl(XenForo_Link::buildPublicLink('faq/category', $category, array('page' => $page)));
+        $this->canonicalizePageNumber($page, $faqPerPage, $faqCatTotal, 'faq/category');
+
         // Get attachments
         $questions = $questionModel->getAndMergeAttachmentsIntoQuestion($questions);
 
@@ -148,7 +174,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             'faq' => $questions,
             'page'               => $page,
             'faqPerPage'         => $faqPerPage,
-            'faqCatTotal'        => $questionModel->getCategoryTotal($category_id),
+            'faqCatTotal'        => $faqCatTotal,
             'faqcategory'        => $category,
             // Sidebar
             'popular'       => $questionModel->getPopular(5),
@@ -269,6 +295,10 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
         // Get attachments
         $question = $questionModel->getAndMergeAttachmentsIntoQuestion($question, $question['faq_id']);
 
+        $this->canonicalizeRequestUrl(
+            XenForo_Link::buildPublicLink('faq', $question)
+        );
+
         // Likes
         $likeModel                 = $this->_getLikeModel();
         $question['like_users']    = unserialize($question['like_users']);
@@ -377,8 +407,16 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
     {
         $this->_assertCanManageFAQ();
 
+        $questionModel = $this->_getQuestionModel();
+        $attachmentModel = $this->_getAttachmentModel();
+
+        $attachmentParams = $questionModel->getAttachmentParams();
+
         $viewParams = array(
             'categories' => $this->_getCategoryModel()->getAll(),
+            'attachmentParams' => $attachmentParams,
+            'attachments' => array(),
+            'attachmentConstraints' => $attachmentModel->getAttachmentConstraints(),
         );
 
         return $this->responseView('Iversia_FAQ_ViewPublic_Create', 'iversia_faq_create', $viewParams);
@@ -433,7 +471,6 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             $dw->bulkSet(
                 array(
                     'category_id'       => $input['category_id'],
-                    'moderation'        => 0,
                     'sticky'            => $input['sticky'],
                     'display_order'     => $this->_input->filterSingle('display_order', XenForo_Input::UINT),
                     'question'          => $input['question'],

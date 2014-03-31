@@ -128,7 +128,7 @@ class Iversia_FAQ_Installer
             }
 
             if ($version < 220) {
-                $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `display_order` tinyint NOT NULL DEFAULT '0' AFTER `moderation`;");
+                $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `display_order` int(10) unsigned NOT NULL DEFAULT '1' AFTER `moderation`;");
             }
 
             // Adding attachments
@@ -145,6 +145,11 @@ class Iversia_FAQ_Installer
                         ('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question'),
                         ('xf_faq_question', 'moderation_queue_handler_class', 'Iversia_FAQ_ModerationQueueHandler_Question');"
                 );
+            }
+
+            if ($version < 302) {
+                // Fix for upgrades
+                $db->query("ALTER TABLE `xf_faq_question` CHANGE COLUMN `display_order` `display_order` int(10) UNSIGNED NOT NULL DEFAULT '1';");
             }
 
             XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();

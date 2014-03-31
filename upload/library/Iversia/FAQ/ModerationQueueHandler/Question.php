@@ -43,7 +43,7 @@ class Iversia_FAQ_ModerationQueueHandler_Question extends XenForo_ModerationQueu
 
             // Notify user that their question has been answered
             $visitor = XenForo_Visitor::getInstance();
-            $alertModel = XenForo_DataWriter::create('XenForo_Model_Alert');
+            $alertModel = XenForo_Model::create('XenForo_Model_Alert');
             $alertModel->alert($question['user_id'], $visitor['user_id'], $visitor['username'], 'xf_faq_question', $contentId, 'answered', $question);
         }
 
