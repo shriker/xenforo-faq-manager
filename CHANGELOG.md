@@ -1,7 +1,9 @@
+- [NEW] Index page layouts: Jump Links, Question Columns
 - [NEW] Forced canonical URLs
 - [FIX] Incorrect class was being called for alerts
 - [FIX] Category heading no longer disappears when clicked
 - [FIX] Too small data type for display order on older installations
+- [FIX] RSS feed link not displaying correctly
 
 Version 3.0.0
 ---------------

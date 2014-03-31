@@ -33,17 +33,32 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
 
         if ($faqIndexLayout == 'jump_links') {
             $indexTemplate = 'iversia_faq_jump_links';
+
+            $questions = $questionModel->getAll(array(
+                'order'     => XenForo_Application::get('options')->faqSortOrder,
+                'direction' => XenForo_Application::get('options')->faqSortOrderDir,
+            ));
+
+            // Get attachments
+            $questions = $questionModel->getAndMergeAttachmentsIntoQuestion($questions);
+
+        } elseif ($faqIndexLayout == 'question_columns') {
+            $indexTemplate = 'iversia_faq_question_columns';
+            $questions = $questionModel->getAll(array(
+                'order'     => XenForo_Application::get('options')->faqSortOrder,
+                'direction' => XenForo_Application::get('options')->faqSortOrderDir,
+            ));
+        } else {
+            $questions = $questionModel->getAll(array(
+                'perPage'   => $faqPerPage,
+                'page'      => $page,
+                'order'     => XenForo_Application::get('options')->faqSortOrder,
+                'direction' => XenForo_Application::get('options')->faqSortOrderDir,
+            ));
+
+            // Get attachments
+            $questions = $questionModel->getAndMergeAttachmentsIntoQuestion($questions);
         }
-
-        $questions = $questionModel->getAll(array(
-            'perPage'   => $faqPerPage,
-            'page'      => $page,
-            'order'     => XenForo_Application::get('options')->faqSortOrder,
-            'direction' => XenForo_Application::get('options')->faqSortOrderDir,
-        ));
-
-        // Get attachments
-        $questions = $questionModel->getAndMergeAttachmentsIntoQuestion($questions);
 
         $viewParams = array(
             'faq'           => $questions,
@@ -54,7 +69,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
             'popular'       => $questionModel->getPopular(5),
             'latest'        => $questionModel->getLatest(5),
             'faqStats'      => XenForo_Model::create('XenForo_Model_DataRegistry')->get('faqStats'),
-            'categories' => $categoryModel->getAll(),
+            'categories'    => $categoryModel->getAll(),
         );
 
         // Permissions

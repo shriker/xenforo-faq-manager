@@ -147,7 +147,7 @@ class Iversia_FAQ_Installer
                 );
             }
 
-            if ($version < 302) {
+            if ($version < 310) {
                 // Fix for upgrades
                 $db->query("ALTER TABLE `xf_faq_question` CHANGE COLUMN `display_order` `display_order` int(10) UNSIGNED NOT NULL DEFAULT '1';");
             }
