@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="3.1.0" version_id="310" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="3.1.1" version_id="311" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -452,7 +452,7 @@ desc={xen:phrase descending_order}</edit_format_params>
 		<xen:hook name="faq_categories_footer" />
 	</ul>
 </li>]]></template>
-    <template title="iversia_faq_category" version_id="310" version_string="3.1.0"><![CDATA[<xen:title>{$faqcategory.title}{$thread.title}{xen:helper pagenumber, $page}</xen:title>
+    <template title="iversia_faq_category" version_id="311" version_string="3.1.1"><![CDATA[<xen:title>{$faqcategory.title}{$thread.title}{xen:helper pagenumber, $page}</xen:title>
 <xen:h1>{$faqcategory.title}</xen:h1>
 
 <xen:if is="{$faqcategory.short_desc}">

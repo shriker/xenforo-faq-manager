@@ -1,3 +1,9 @@
+Version 3.0.1
+---------------
+- [FIX] For disappearing categories
+
+Version 3.1.0
+---------------
 - [NEW] Index page layouts: Jump Links, Question Columns
 - [NEW] Forced canonical URLs
 - [FIX] Incorrect class was being called for alerts

@@ -24,7 +24,8 @@ class Iversia_FAQ_Listener_TemplateHook
             $faqLinks = array();
             $faqLinks['faqCats'] = XenForo_Application::getSimpleCacheData('faq_categories');
 
-            if (! isset($faqLinks['faqCats'])) {
+
+            if (! isset($faqLinks['faqCats']) || ! $faqLinks['faqCats']) {
                 // Create cache
                 $categories = $faqCatModel->getAll(XenForo_Application::get('options')->faqCatNavCount);
                 $faqLinks['faqCats'] = XenForo_Application::setSimpleCacheData('faq_categories', $categories);

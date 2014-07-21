@@ -16,7 +16,7 @@ class Iversia_FAQ_FileSums
   'library/Iversia/FAQ/Installer.php' => 'd1de34bf1e176b3206ad711890af2a09',
   'library/Iversia/FAQ/LikeHandler/Question.php' => 'd4cc23393226963185f988f0069187ae',
   'library/Iversia/FAQ/Listener/Extend.php' => '45480ab7d40b350d1138a9f50648f50c',
-  'library/Iversia/FAQ/Listener/TemplateHook.php' => '39d7d7a864379b1e4bbee5cb9e0f0821',
+  'library/Iversia/FAQ/Listener/TemplateHook.php' => '3b7434b845b752059dd543f916cf41cb',
   'library/Iversia/FAQ/Listener/Widgets.php' => '1e71b82710b21a807b8bb00b80aeb90b',
   'library/Iversia/FAQ/Model/Category.php' => '48058aba484392777ab620e3203dd1ec',
   'library/Iversia/FAQ/Model/Question.php' => '355b5fb2940942f17ad431dd78e3d184',
