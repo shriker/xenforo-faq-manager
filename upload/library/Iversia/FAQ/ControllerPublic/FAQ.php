@@ -77,7 +77,7 @@ class Iversia_FAQ_ControllerPublic_FAQ extends XenForo_ControllerPublic_Abstract
         $viewParams['canManageCats'] = $categoryModel->canManageCategories();
         $viewParams['canAsk']        = $questionModel->canAskQuestions();
 
-        $this->canonicalizeRequestUrl(XenForo_Link::buildPublicLink('faq'));
+        $this->canonicalizeRequestUrl(XenForo_Link::buildPublicLink('faq', '', array('page' => $page)));
         $this->canonicalizePageNumber($page, $faqPerPage, $faqTotal, 'faq');
 
         return $this->getWrapper(

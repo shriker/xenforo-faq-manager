@@ -1,4 +1,8 @@
-Version 3.0.1
+Version 3.1.2
+---------------
+- [FIX] Adding missing page number for canonical pagination on index
+
+Version 3.1.1
 ---------------
 - [FIX] For disappearing categories
 
