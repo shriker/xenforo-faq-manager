@@ -83,6 +83,7 @@ class Iversia_FAQ_Installer
                 "INSERT INTO xf_content_type_field
                     (content_type, field_name, field_value)
                 VALUES
+                    ('xf_faq_question', 'sitemap_handler_class', 'Iversia_FAQ_SitemapHandler_Question'),
                     ('xf_faq_question', 'attachment_handler_class', 'Iversia_FAQ_AttachmentHandler_Question'),
                     ('xf_faq_question', 'moderation_queue_handler_class', 'Iversia_FAQ_ModerationQueueHandler_Question'),
                     ('xf_faq_question', 'search_handler_class', 'Iversia_FAQ_Search_DataHandler_Question'),
@@ -150,6 +151,16 @@ class Iversia_FAQ_Installer
             if ($version < 310) {
                 // Fix for upgrades
                 $db->query("ALTER TABLE `xf_faq_question` CHANGE COLUMN `display_order` `display_order` int(10) UNSIGNED NOT NULL DEFAULT '1';");
+            }
+
+            // Adding sitemap handler
+            if ($version < 320) {
+                $db->query(
+                    "INSERT INTO xf_content_type_field
+                        (content_type, field_name, field_value)
+                    VALUES
+                        ('xf_faq_question', 'sitemap_handler_class', 'Iversia_FAQ_SitemapHandler_Question');"
+                );
             }
 
             XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();

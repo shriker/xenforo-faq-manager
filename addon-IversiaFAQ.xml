@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="iversiaFAQ" title="[Iversia] FAQ Manager" version_string="3.1.2" version_id="312" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="iversiaFAQ" title="FAQ Manager by Iversia" version_string="3.2.0" version_id="312" url="http://www.iversia.com" install_callback_class="Iversia_FAQ_Installer" install_callback_method="install" uninstall_callback_class="Iversia_FAQ_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -212,7 +212,7 @@ desc={xen:phrase descending_order}</edit_format_params>
     <phrase title="option_faqSortOrderDir" version_id="100" version_string="1.0.0"><![CDATA[Sort Order Direction]]></phrase>
     <phrase title="option_faqSortOrderDir_explain" version_id="100" version_string="1.0.0"><![CDATA[]]></phrase>
     <phrase title="option_faqSortOrder_explain" version_id="100" version_string="1.0.0"><![CDATA[]]></phrase>
-    <phrase title="option_group_faqOptions" version_id="100" version_string="1.0.0"><![CDATA[[Iversia] FAQ Manager]]></phrase>
+    <phrase title="option_group_faqOptions" version_id="312" version_string="3.2.0"><![CDATA[FAQ Manager by Iversia]]></phrase>
     <phrase title="option_group_faqOptions_description" version_id="101" version_string="1.0.1"><![CDATA[Update and edit your Frequently Asked Questions settings.]]></phrase>
     <phrase title="permission_FAQ_Manager_Permissions_canAskQuestions" version_id="300" version_string="3.0.0"><![CDATA[Ask new questions]]></phrase>
     <phrase title="permission_FAQ_Manager_Permissions_canLikeFAQ" version_id="300" version_string="3.0.0"><![CDATA[Like FAQ answers]]></phrase>
@@ -1296,7 +1296,7 @@ desc={xen:phrase descending_order}</edit_format_params>
   </public_template_modifications>
   <bb_code_media_sites/>
   <bb_codes>
-    <bb_code bb_code_id="faq" bb_code_mode="callback" has_option="yes" callback_class="Iversia_FAQ_BbCode_Formatter_Base" callback_method="renderTagFAQ" option_regex="/^[0-9]+$/i" trim_lines_after="2" plain_children="0" disable_smilies="1" disable_nl2br="1" disable_autolink="1" allow_signature="1" editor_icon_url="" sprite_mode="0" active="1">
+    <bb_code bb_code_id="faq" bb_code_mode="callback" has_option="yes" callback_class="Iversia_FAQ_BbCode_Formatter_Base" callback_method="renderTagFAQ" option_regex="/^[0-9]+$/i" trim_lines_after="2" plain_children="0" disable_smilies="1" disable_nl2br="1" disable_autolink="1" allow_empty="0" allow_signature="1" editor_icon_url="" sprite_mode="0" active="1">
       <replace_html><![CDATA[]]></replace_html>
       <replace_html_email><![CDATA[]]></replace_html_email>
       <replace_text><![CDATA[]]></replace_text>
