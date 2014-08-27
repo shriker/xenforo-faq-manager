@@ -1,3 +1,7 @@
+Version 3.2.0
+---------------
+- [NEW] Support automatic XML sitemap building when used with XenForo 1.4
+
 Version 3.1.2
 ---------------
 - [FIX] Adding missing page number for canonical pagination on index
