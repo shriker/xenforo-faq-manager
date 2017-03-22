@@ -4,9 +4,8 @@ class Iversia_FAQ_ViewPublic_Create extends XenForo_ViewPublic_Base
 {
     /**
      * renderHtml function.
-     * Add WYSIWYG editor to submission form
+     * Add WYSIWYG editor to submission form.
      *
-     * @access public
      * @return void
      */
     public function renderHtml()

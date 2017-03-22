@@ -10,7 +10,7 @@ class Iversia_FAQ_Installer
     {
         if (!self::$instance) {
             $c = __CLASS__;
-            self::$instance = new $c;
+            self::$instance = new $c();
         }
 
         return self::$instance;
@@ -92,7 +92,6 @@ class Iversia_FAQ_Installer
             );
 
             XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
-
         } else {
             // Version 1.0.1
             if ($version < 101) {
@@ -134,10 +133,9 @@ class Iversia_FAQ_Installer
 
             // Adding attachments
             if ($version < 250) {
+                $db->query('ALTER TABLE `xf_faq_question` ADD COLUMN `attach_count` int(10) AFTER `answer_date`;');
 
-                $db->query("ALTER TABLE `xf_faq_question` ADD COLUMN `attach_count` int(10) AFTER `answer_date`;");
-
-                $db->query("ALTER TABLE `xf_faq_category` ADD COLUMN `short_desc` varchar(255) NOT NULL AFTER `display_order`, ADD COLUMN `long_desc` text NOT NULL AFTER `short_desc`;");
+                $db->query('ALTER TABLE `xf_faq_category` ADD COLUMN `short_desc` varchar(255) NOT NULL AFTER `display_order`, ADD COLUMN `long_desc` text NOT NULL AFTER `short_desc`;');
 
                 $db->query(
                     "INSERT INTO xf_content_type_field
@@ -174,15 +172,15 @@ class Iversia_FAQ_Installer
     /**
      * Go home FAQ, you're drunk.
      *
-     * @access public
      * @static
+     *
      * @return void
      */
     public static function uninstall()
     {
         $db = XenForo_Application::get('db');
 
-        $faqIds = $db->fetchAll("SELECT faq_id FROM xf_faq_question");
+        $faqIds = $db->fetchAll('SELECT faq_id FROM xf_faq_question');
         XenForo_Model::create('XenForo_Model_Alert')->deleteAlerts('xf_faq_question', $faqIds);
         XenForo_Model::create('XenForo_Model_Like')->deleteContentLikes('xf_faq_question', $faqIds);
 

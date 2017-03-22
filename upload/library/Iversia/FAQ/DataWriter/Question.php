@@ -8,44 +8,44 @@ class Iversia_FAQ_DataWriter_Question extends XenForo_DataWriter
 
     protected function _getFields()
     {
-        return array(
-            'xf_faq_question'    => array(
-                'faq_id'        => array('type' => self::TYPE_UINT, 'autoIncrement' => true),
-                'category_id'   => array('type' => self::TYPE_UINT, 'default' => array('xf_faq_category', 'category_id'), 'required' => true),
+        return [
+            'xf_faq_question'    => [
+                'faq_id'        => ['type' => self::TYPE_UINT, 'autoIncrement' => true],
+                'category_id'   => ['type' => self::TYPE_UINT, 'default' => ['xf_faq_category', 'category_id'], 'required' => true],
 
-                'moderation'    => array('type' => self::TYPE_UINT, 'required' => true),
-                'sticky'        => array('type' => self::TYPE_UINT, 'required' => false, 'default' => 0),
-                'display_order'    => array('type' => self::TYPE_UINT, 'required' => true, 'default' => 0),
+                'moderation'       => ['type' => self::TYPE_UINT, 'required' => true],
+                'sticky'           => ['type' => self::TYPE_UINT, 'required' => false, 'default' => 0],
+                'display_order'    => ['type' => self::TYPE_UINT, 'required' => true, 'default' => 0],
 
-                'user_id'       => array('type' => self::TYPE_UINT,     'required' => true),
+                'user_id'       => ['type' => self::TYPE_UINT,     'required' => true],
 
-                'attach_count'  => array('type' => self::TYPE_UINT,     'required' => false, 'default' => 0),
-                'view_count'    => array('type' => self::TYPE_UINT,     'required' => false),
-                'likes'         => array('type' => self::TYPE_UINT,     'required' => false, 'default' => 0),
-                'like_users'    => array('type' => self::TYPE_SERIALIZED, 'default' => 'a:0:{}'),
+                'attach_count'  => ['type' => self::TYPE_UINT,     'required' => false, 'default' => 0],
+                'view_count'    => ['type' => self::TYPE_UINT,     'required' => false],
+                'likes'         => ['type' => self::TYPE_UINT,     'required' => false, 'default' => 0],
+                'like_users'    => ['type' => self::TYPE_SERIALIZED, 'default' => 'a:0:{}'],
 
-                'question'      => array('type' => self::TYPE_STRING,   'required' => true, 'maxLength' => 150),
-                'answer'        => array('type' => self::TYPE_STRING,   'required' => false),
+                'question'      => ['type' => self::TYPE_STRING,   'required' => true, 'maxLength' => 150],
+                'answer'        => ['type' => self::TYPE_STRING,   'required' => false],
 
                 // Times
-                'submit_date'   => array('type' => self::TYPE_UINT, 'required' => true, 'default' => XenForo_Application::$time),
-                'answer_date'   => array('type' => self::TYPE_UINT, 'required' => false, 'default' => XenForo_Application::$time),
-            )
-        );
+                'submit_date'   => ['type' => self::TYPE_UINT, 'required' => true, 'default' => XenForo_Application::$time],
+                'answer_date'   => ['type' => self::TYPE_UINT, 'required' => false, 'default' => XenForo_Application::$time],
+            ],
+        ];
     }
 
     protected function _getExistingData($data)
     {
-        if ( ! $id = $this->_getExistingPrimaryKey($data, 'faq_id')) {
+        if (!$id = $this->_getExistingPrimaryKey($data, 'faq_id')) {
             return false;
         }
 
-        return array('xf_faq_question' => $this->getModelFromCache('Iversia_FAQ_Model_Question')->getById($id));
+        return ['xf_faq_question' => $this->getModelFromCache('Iversia_FAQ_Model_Question')->getById($id)];
     }
 
     protected function _getUpdateCondition($tableName)
     {
-        return 'faq_id = ' . $this->_db->quote($this->getExisting('faq_id'));
+        return 'faq_id = '.$this->_db->quote($this->getExisting('faq_id'));
     }
 
     protected function _postSave()
@@ -53,8 +53,7 @@ class Iversia_FAQ_DataWriter_Question extends XenForo_DataWriter
         $this->_indexForSearch();
 
         $attachmentHash = $this->getExtraData(self::DATA_ATTACHMENT_HASH);
-        if ($attachmentHash)
-        {
+        if ($attachmentHash) {
             $this->_associateAttachments($attachmentHash);
         }
     }
@@ -63,7 +62,7 @@ class Iversia_FAQ_DataWriter_Question extends XenForo_DataWriter
     {
         $this->getModelFromCache('XenForo_Model_Attachment')->deleteAttachmentsFromContentIds(
             'xf_faq_question',
-            array($this->get('faq_id'))
+            [$this->get('faq_id')]
         );
     }
 
@@ -75,20 +74,20 @@ class Iversia_FAQ_DataWriter_Question extends XenForo_DataWriter
 
     protected function _associateAttachments($attachmentHash)
     {
-        $rows = $this->_db->update('xf_attachment', array(
+        $rows = $this->_db->update('xf_attachment', [
             'content_type' => 'xf_faq_question',
-            'content_id' => $this->get('faq_id'),
-            'temp_hash' => '',
-            'unassociated' => 0
-        ), 'temp_hash = ' . $this->_db->quote($attachmentHash));
+            'content_id'   => $this->get('faq_id'),
+            'temp_hash'    => '',
+            'unassociated' => 0,
+        ], 'temp_hash = '.$this->_db->quote($attachmentHash));
 
         if ($rows) {
             $newAttachCount = $this->get('attach_count') + $rows;
 
-            $this->set('attach_count', $newAttachCount, '', array('setAfterPreSave' => true));
-            $this->_db->update('xf_faq_question', array(
-                'attach_count' => $newAttachCount),
-                'faq_id = ' . $this->get('faq_id')
+            $this->set('attach_count', $newAttachCount, '', ['setAfterPreSave' => true]);
+            $this->_db->update('xf_faq_question', [
+                'attach_count' => $newAttachCount, ],
+                'faq_id = '.$this->get('faq_id')
             );
         }
     }

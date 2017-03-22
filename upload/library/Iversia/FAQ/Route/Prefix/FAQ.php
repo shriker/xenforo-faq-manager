@@ -7,8 +7,7 @@ class Iversia_FAQ_Route_Prefix_FAQ implements XenForo_Route_Interface
         $action = $router->resolveActionWithIntegerParam($routePath, $request, 'faq_id');
         $actions = explode('/', $action);
 
-        switch ($actions[0])
-        {
+        switch ($actions[0]) {
             case 'category':
                 $action = $router->resolveActionWithIntegerParam($routePath, $request, 'category_id');
                 $action = $router->resolveActionAsPageNumber($action, $request);
@@ -30,8 +29,7 @@ class Iversia_FAQ_Route_Prefix_FAQ implements XenForo_Route_Interface
         $strParams = '';
         $slice = false;
 
-        switch ($subPrefix)
-        {
+        switch ($subPrefix) {
             case 'category':
                 $intParams = 'category_id';
                 $title = 'title';
@@ -61,7 +59,7 @@ class Iversia_FAQ_Route_Prefix_FAQ implements XenForo_Route_Interface
 
         $action = XenForo_Link::getPageNumberAsAction($action, $extraParams);
 
-        if ( ! is_array($data)) {
+        if (!is_array($data)) {
             $action = XenForo_Link::getPageNumberAsAction($action, $extraParams);
 
             return XenForo_Link::buildBasicLink($outputPrefix, $action);

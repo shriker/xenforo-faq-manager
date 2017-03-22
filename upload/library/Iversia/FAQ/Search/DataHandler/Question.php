@@ -6,10 +6,9 @@ class Iversia_FAQ_Search_DataHandler_Question extends XenForo_Search_DataHandler
 
     protected function _deleteFromIndex(XenForo_Search_Indexer $indexer, array $dataList)
     {
-        $ids = array();
+        $ids = [];
 
-        foreach ($dataList AS $data)
-        {
+        foreach ($dataList as $data) {
             $ids[] = $data['faq_id'];
         }
 
@@ -52,13 +51,13 @@ class Iversia_FAQ_Search_DataHandler_Question extends XenForo_Search_DataHandler
 
     public function getSearchContentTypes()
     {
-        return array('xf_faq_question');
+        return ['xf_faq_question'];
     }
 
     public function getSearchFormControllerResponse(XenForo_ControllerPublic_Abstract $controller, XenForo_Input $input, array $viewParams)
-        {
-            return $controller->responseView('Iversia_FAQ_ViewPublic_Search_Form_Question', 'search_form_question', $viewParams);
-        }
+    {
+        return $controller->responseView('Iversia_FAQ_ViewPublic_Search_Form_Question', 'search_form_question', $viewParams);
+    }
 
     public function rebuildIndex(XenForo_Search_Indexer $indexer, $lastId, $batchSize)
     {
@@ -77,7 +76,7 @@ class Iversia_FAQ_Search_DataHandler_Question extends XenForo_Search_DataHandler
     {
         $pages = $this->getQuestionModel()->getQuestionsByIds($contentIds);
 
-        foreach ($pages AS $page) {
+        foreach ($pages as $page) {
             $this->insertIntoIndex($indexer, $page);
         }
 
@@ -86,10 +85,10 @@ class Iversia_FAQ_Search_DataHandler_Question extends XenForo_Search_DataHandler
 
     public function renderResult(XenForo_View $view, array $result, array $search)
     {
-        return $view->createTemplateObject('xf_faq_question_search_result', array(
+        return $view->createTemplateObject('xf_faq_question_search_result', [
             'question'  => $result,
-            'search'    => $search
-        ));
+            'search'    => $search,
+        ]);
     }
 
     private function getQuestionModel()
@@ -97,6 +96,7 @@ class Iversia_FAQ_Search_DataHandler_Question extends XenForo_Search_DataHandler
         if (!$this->questionModel) {
             $this->questionModel = XenForo_Model::create('Iversia_FAQ_Model_Question');
         }
+
         return $this->questionModel;
     }
 }

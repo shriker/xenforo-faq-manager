@@ -8,9 +8,8 @@ class Iversia_FAQ_AttachmentHandler_Question extends XenForo_AttachmentHandler_A
 
     protected function _canUploadAndManageAttachments(array $contentData, array $viewingUser)
     {
-        return ($viewingUser['user_id']
-            && XenForo_Permission::hasPermission($viewingUser['permissions'], 'FAQ_Manager_Permissions', 'uploadFAQAttach')
-        );
+        return $viewingUser['user_id']
+            && XenForo_Permission::hasPermission($viewingUser['permissions'], 'FAQ_Manager_Permissions', 'uploadFAQAttach');
     }
 
     // Everyone can view attachments on FAQ entries

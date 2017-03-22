@@ -19,17 +19,16 @@ class Iversia_FAQ_SitemapHandler_Question extends XenForo_SitemapHandler_Abstrac
         ksort($questions);
 
         return $questions;
-
     }
 
     public function getData(array $entry)
     {
         $entry['title'] = XenForo_Helper_String::censorString($entry['question']);
 
-        return array(
-            'loc' => XenForo_Link::buildPublicLink('canonical:faq', $entry),
-            'lastmod' => $entry['answer_date']
-        );
+        return [
+            'loc'     => XenForo_Link::buildPublicLink('canonical:faq', $entry),
+            'lastmod' => $entry['answer_date'],
+        ];
     }
 
     public function isIncluded(array $entry, array $viewingUser)
@@ -44,8 +43,7 @@ class Iversia_FAQ_SitemapHandler_Question extends XenForo_SitemapHandler_Abstrac
 
     protected function _questionModel()
     {
-        if (!$this->_questionModel)
-        {
+        if (!$this->_questionModel) {
             $this->_questionModel = XenForo_Model::create('Iversia_FAQ_Model_Question');
         }
 
