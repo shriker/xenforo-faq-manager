@@ -7,20 +7,19 @@ class Iversia_FAQ_ModerationQueueHandler_Question extends XenForo_ModerationQueu
         $questionModel = $this->_getQuestionModel();
         $questions = $questionModel->getQuestionsByIds($contentIds);
 
-        $output = array();
+        $output = [];
 
-        foreach ($questions AS $question)
-        {
-            $output[$question['faq_id']] = array(
+        foreach ($questions as $question) {
+            $output[$question['faq_id']] = [
                 'message' => $question['answer'],
-                'user' => array(
-                    'user_id' => $question['user_id'],
-                    'username' => $question['username']
-                ),
-                'title' => $question['question'],
-                'link' => XenForo_Link::buildPublicLink('faq', $question),
-                'contentTypeTitle' => new XenForo_Phrase('iversia_faq')
-            );
+                'user'    => [
+                    'user_id'  => $question['user_id'],
+                    'username' => $question['username'],
+                ],
+                'title'            => $question['question'],
+                'link'             => XenForo_Link::buildPublicLink('faq', $question),
+                'contentTypeTitle' => new XenForo_Phrase('iversia_faq'),
+            ];
         }
 
         return $output;
