@@ -32,7 +32,7 @@ Demo
 
 Requirements
 ------------
-* [XenForo](http://xenforo.com/) 1.3+
+* [XenForo](http://xenforo.com/) 1.3, 1.4, 1.5
 
 Download
 ------------
