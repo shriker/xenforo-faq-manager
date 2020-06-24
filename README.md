@@ -28,7 +28,7 @@ Features
 Demo
 ------------
 
-> [http://www.rpgfix.com/faq/](http://www.rpgfix.com/faq/)
+> [https://shriker.ca/xenforo-faq-manager/](https://shriker.ca/xenforo-faq-manager/)
 
 Requirements
 ------------
@@ -54,7 +54,8 @@ Configuration
 
 Support
 ------------
-* [Common Questions](https://github.com/iversia/xenforo-faq-manager/blob/master/HELP.md) - A list of common issues and installation questions.
+* [XenForo 2 Version](https://github.com/shriker/xenforo2-faq-manager)
+* [Common Questions](https://github.com/shriker/xenforo-faq-manager/blob/master/HELP.md) - A list of common issues and installation questions.
 * [FAQ Manager Discussion](http://xenforo.com/community/threads/iversia-faq-manager.44228/) - All questions, support, and feature requests should be made here.
 
 Copyright / License
