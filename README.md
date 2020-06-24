@@ -56,7 +56,7 @@ Support
 ------------
 * [XenForo 2 Version](https://github.com/shriker/xenforo2-faq-manager)
 * [Common Questions](https://github.com/shriker/xenforo-faq-manager/blob/master/HELP.md) - A list of common issues and installation questions.
-* [FAQ Manager Discussion](http://xenforo.com/community/threads/iversia-faq-manager.44228/) - All questions, support, and feature requests should be made here.
+* [FAQ Manager Discussion](http://xenforo.com/community/threads/iversia-faq-manager.44228/)
 
 Copyright / License
 ------------
